@@ -1,0 +1,2 @@
+"""QRaksha-Kavach backend application."""
+
