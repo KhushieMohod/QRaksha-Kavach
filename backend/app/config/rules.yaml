@@ -1,0 +1,68 @@
+# Detection rules and vocabulary (SPEC Section 5)
+
+# Known handle suffixes (verified against NPCI published PSP list)
+known_handle_suffixes:
+  - okaxis
+  - oksbi
+  - okhdfcbank
+  - okicici
+  - ybl
+  - ibl
+  - axl
+  - paytm
+  - apl
+  - upi
+
+# Brand keywords commonly impersonated
+brand_words:
+  - sbi
+  - hdfc
+  - icici
+  - axis
+  - npci
+  - paytm
+  - phonepe
+  - gpay
+  - rbi
+  - kyc
+
+# Support/helpdesk words used in lures
+support_words:
+  - support
+  - help
+  - care
+  - refund
+  - kyc
+  - gov
+  - official
+
+# Common leetspeak digit-to-letter substitutions for brand words
+digit_substitutions:
+  "0": "o"
+  "1": "i"
+  "3": "e"
+  "4": "a"
+  "5": "s"
+
+# Scam categories and weights for scam_text detector (SPEC Section 5)
+scam_categories:
+  otp_pin_request: 0.7
+  kyc_update: 0.5
+  digital_arrest: 0.8
+  apk_install: 0.7
+  scan_to_receive: 0.7
+  prize_refund: 0.5
+  parcel_customs: 0.5
+  impersonation_authority: 0.5
+  payment_demand: 0.4
+  urgency_threat: 0.3
+  link_shortener: 0.3
+
+# Negation phrases that suppress scam matches within 6 words (SPEC Section 6.5)
+negation_phrases:
+  - "never share"
+  - "do not share"
+  - "don't share"
+  - "will never ask"
+  - "never disclose"
+

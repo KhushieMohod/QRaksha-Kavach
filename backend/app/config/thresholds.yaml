@@ -1,0 +1,13 @@
+# Thresholds configuration (SPEC Section 5)
+# Values are starting points; change only via YAML configuration.
+
+registry_radius_m: 100
+alert_rate_limit_minutes: 30
+baseline_min_scans: 8
+baseline_days: 30
+baseline_share: 0.7
+scam_caution: 0.5
+scam_danger: 0.8
+lookalike_suffix_edit_distance: 1
+llm_timeout_seconds: 8
+
