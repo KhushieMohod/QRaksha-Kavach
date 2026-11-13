@@ -1,0 +1,163 @@
+[
+  {
+    "shop_code": "KIR-0001",
+    "name": "Lakshmi Kirana Store",
+    "upi_id": "lakshmi.kirana@okaxis",
+    "category": "grocery",
+    "coarse_lat": 17.384,
+    "coarse_lng": 78.486
+  },
+  {
+    "shop_code": "KIR-0002",
+    "name": "Sai Ram Vegetables",
+    "upi_id": "sairam.veg@okaxis",
+    "category": "vegetables",
+    "coarse_lat": 17.385,
+    "coarse_lng": 78.487
+  },
+  {
+    "shop_code": "KIR-0003",
+    "name": "Venkata Fruits Corner",
+    "upi_id": "venkata.fruits@okaxis",
+    "category": "fruits",
+    "coarse_lat": 17.386,
+    "coarse_lng": 78.488
+  },
+  {
+    "shop_code": "KIR-0004",
+    "name": "Ganesha Medical Hall",
+    "upi_id": "ganesha.medical@okaxis",
+    "category": "pharmacy",
+    "coarse_lat": 17.383,
+    "coarse_lng": 78.485
+  },
+  {
+    "shop_code": "KIR-0005",
+    "name": "Balaji Hardware",
+    "upi_id": "balaji.hardware@okaxis",
+    "category": "hardware",
+    "coarse_lat": 17.387,
+    "coarse_lng": 78.489
+  },
+  {
+    "shop_code": "KIR-0006",
+    "name": "Padma Textiles",
+    "upi_id": "padma.textiles@okaxis",
+    "category": "textiles",
+    "coarse_lat": 17.382,
+    "coarse_lng": 78.484
+  },
+  {
+    "shop_code": "KIR-0007",
+    "name": "Raghav Sweets",
+    "upi_id": "raghav.sweets@okaxis",
+    "category": "sweets",
+    "coarse_lat": 17.388,
+    "coarse_lng": 78.490
+  },
+  {
+    "shop_code": "KIR-0008",
+    "name": "Durga Electronics",
+    "upi_id": "durga.electronics@okaxis",
+    "category": "electronics",
+    "coarse_lat": 17.381,
+    "coarse_lng": 78.483
+  },
+  {
+    "shop_code": "KIR-0009",
+    "name": "Mahalakshmi Sarees",
+    "upi_id": "mahalakshmi.sarees@okaxis",
+    "category": "textiles",
+    "coarse_lat": 17.389,
+    "coarse_lng": 78.491
+  },
+  {
+    "shop_code": "KIR-0010",
+    "name": "Krishna Dairy",
+    "upi_id": "krishna.dairy@okaxis",
+    "category": "dairy",
+    "coarse_lat": 17.384,
+    "coarse_lng": 78.488
+  },
+  {
+    "shop_code": "KIR-0011",
+    "name": "Ravi Chicken Centre",
+    "upi_id": "ravi.chicken@okaxis",
+    "category": "meat",
+    "coarse_lat": 17.386,
+    "coarse_lng": 78.485
+  },
+  {
+    "shop_code": "KIR-0012",
+    "name": "Anjali Flowers",
+    "upi_id": "anjali.flowers@okaxis",
+    "category": "flowers",
+    "coarse_lat": 17.383,
+    "coarse_lng": 78.489
+  },
+  {
+    "shop_code": "KIR-0013",
+    "name": "Srinivasa Bakery",
+    "upi_id": "srinivasa.bakery@okaxis",
+    "category": "bakery",
+    "coarse_lat": 17.387,
+    "coarse_lng": 78.484
+  },
+  {
+    "shop_code": "KIR-0014",
+    "name": "Hanuman Stationery",
+    "upi_id": "hanuman.stationery@okaxis",
+    "category": "stationery",
+    "coarse_lat": 17.382,
+    "coarse_lng": 78.490
+  },
+  {
+    "shop_code": "KIR-0015",
+    "name": "Priya Beauty Parlour",
+    "upi_id": "priya.beauty@okaxis",
+    "category": "beauty",
+    "coarse_lat": 17.388,
+    "coarse_lng": 78.486
+  },
+  {
+    "shop_code": "KIR-0016",
+    "name": "Suresh Mobile Repairs",
+    "upi_id": "suresh.mobiles@okaxis",
+    "category": "electronics",
+    "coarse_lat": 17.385,
+    "coarse_lng": 78.483
+  },
+  {
+    "shop_code": "KIR-0017",
+    "name": "Govind Tea Stall",
+    "upi_id": "govind.tea@okaxis",
+    "category": "food",
+    "coarse_lat": 17.384,
+    "coarse_lng": 78.487
+  },
+  {
+    "shop_code": "KIR-0018",
+    "name": "Ramesh Tailors",
+    "upi_id": "ramesh.tailors@okaxis",
+    "category": "tailoring",
+    "coarse_lat": 17.381,
+    "coarse_lng": 78.491
+  },
+  {
+    "shop_code": "KIR-0019",
+    "name": "Shanti General Store",
+    "upi_id": "shanti.general@okaxis",
+    "category": "grocery",
+    "coarse_lat": 17.385,
+    "coarse_lng": 78.487
+  },
+  {
+    "shop_code": "KIR-0020",
+    "name": "Meena Bangles Shop",
+    "upi_id": "meena.bangles@okaxis",
+    "category": "jewellery",
+    "coarse_lat": 17.385,
+    "coarse_lng": 78.487
+  }
+]
+
