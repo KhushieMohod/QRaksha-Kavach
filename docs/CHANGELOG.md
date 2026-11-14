@@ -4,6 +4,23 @@ All notable changes to QRaksha-Kavach will be documented in this file.
 
 ## [Unreleased]
 
+### UI/UX Refinement & Polish — Warm & Trustworthy Experience (2026-11-14)
+
+**Plan:**
+- Upgrade frontend design system and visual styling to deliver a warm, trustworthy, and user-friendly experience without altering any working prototype functionality:
+  - Enhance `frontend/tailwind.config.js` and `frontend/src/index.css` with warm sand palette, refined borders, tactile button press states, and smooth shadows.
+  - Refine `frontend/src/App.jsx` with an active status badge ("Offline-Ready Protection Active"), sleek language switch pill, and polished bottom navigation.
+  - Redesign `frontend/src/CheckScreen.jsx` with prominent hero QR scanner card, categorized input tiles, 1-click scenario preset pills with expected verdict previews, and responsive test chip shortcuts.
+  - Redesign `frontend/src/ResultScreen.jsx` with high-impact verdict cards for all 4 verdicts (VERIFIED, UNVERIFIED, CAUTION, DANGER), animated audio waveform playback button, clear action cards, and collapsible technical evidence.
+  - Redesign `frontend/src/MerchantScreen.jsx` with shop selector, QR counter security status banner, counter QR code card, and real-time alert feed.
+  - Redesign `frontend/src/DemoPanelScreen.jsx` with attack simulation cards, clear attack scenario tags, and interactive 4-step Section 11 demo script walkthrough.
+  - Redesign `frontend/src/MetricsScreen.jsx` with KPI cards, 30-scenario breakdown table, and core architecture differentiation pillars.
+  - Enhance `frontend/src/CameraScannerModal.jsx` with viewfinder scanning overlay and quick preset selector.
+- Acceptance & Verification:
+  - Verify frontend builds cleanly with `pnpm build` with zero errors.
+  - Verify full test suite passes with `pytest`.
+  - Confirm all 5 screens and demo simulation workflows remain 100% operational.
+
 ### Step 11 — Level 1 Submission and Final Verification (2026-11-14)
 
 **Plan:**
