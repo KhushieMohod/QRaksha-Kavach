@@ -3,9 +3,11 @@
 from app.detectors import (
     crowd_baseline,
     handle_lookalike,
+    ocr,
     qr_parser,
     registry_binding,
     scam_text,
+    story_link,
 )
 
 __all__ = [
@@ -14,4 +16,6 @@ __all__ = [
     "registry_binding",
     "crowd_baseline",
     "scam_text",
+    "story_link",
+    "ocr",
 ]

@@ -4,6 +4,42 @@ All notable changes to QRaksha-Kavach will be documented in this file.
 
 ## [Unreleased]
 
+### Step 5 — OCR & Story Link Detectors (2026-11-14)
+
+**Plan:**
+- Implement OCR and QR image processing detector in `backend/app/detectors/ocr.py` (SPEC Section 6.7):
+  - Decodes QR code images via OpenCV headless (`cv2.QRCodeDetector`) before attempting OCR.
+  - Extracts text from screenshots via `pytesseract` with English and Telugu (`lang="eng+tel"`).
+  - Calculates word-level confidence and returns user-friendly error asking the user to copy/paste text if image is empty or confidence < 30%.
+  - Handles missing OCR binaries or languages gracefully (SPEC Section 16).
+  - Returns `Signal` object conforming to SPEC Section 4.2.
+- Implement story link detector in `backend/app/detectors/story_link.py` (SPEC Section 6.6):
+  - Extracts UPI IDs (letters, digits, dots, hyphens, underscores + @ + letters) and web URLs from analyzed text.
+  - Persists payees into `flagged_payees` database table when message score $\ge 0.5$ (`scam_caution`).
+  - Increments `report_count` and updates maximum scam score upon repeated detections.
+  - On QR check: flags matching payees with `danger` citing the date and first 80 characters of the source message.
+- Update `backend/app/models.py`:
+  - Enhanced `FlaggedPayee` model with `value`, `kind`, `source_message_id`, `source_message_text`, `score`.
+  - Enhanced `Message` model with `score` and `labels_json`.
+- Export `ocr` and `story_link` in `backend/app/detectors/__init__.py`.
+- Add safety explanations for `flagged_payee_scam_link`, `story_link_ok`, `ocr_qr_decoded`, `ocr_text_extracted`, and `ocr_low_confidence` in `backend/app/config/explanations.yaml`.
+- Create comprehensive tests:
+  - `backend/tests/test_ocr.py`: QR image decoding with OpenCV encoder/decoder, text screenshot OCR, low confidence / blank image handling, graceful missing Tesseract fallback.
+  - `backend/tests/test_story_link.py`: Extraction of UPI IDs and URLs, score threshold condition, citation formatting, deduplication, and full end-to-end acceptance flow from scam message to subsequent QR danger verdict.
+- Acceptance: Full test suite passes (110 tests) and clean database seed idempotency confirmed.
+
+**Files created/modified:**
+- `backend/app/detectors/ocr.py` (created)
+- `backend/app/detectors/story_link.py` (created)
+- `backend/tests/test_ocr.py` (created)
+- `backend/tests/test_story_link.py` (created)
+- `backend/app/models.py` (modified)
+- `backend/app/config/explanations.yaml` (modified)
+- `backend/app/detectors/__init__.py` (modified)
+- `docs/CHANGELOG.md` (modified)
+
+---
+
 ### Step 4 — Scam Text Detector & LLM Integration (2026-11-14)
 
 **Plan:**

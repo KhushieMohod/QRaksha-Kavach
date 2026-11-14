@@ -83,3 +83,45 @@ scam_text_ok:
   hi: "इस संदेश में कोई स्कैम पैटर्न नहीं मिला। यह सुरक्षा की गारंटी नहीं है।"
   next_steps:
     - "Stay alert for unusual requests"
+
+flagged_payee_scam_link:
+  title: "Flagged Scam Payee"
+  en: "This payee was previously reported in a scam message. Do not send any money."
+  te: "ఈ చెల్లింపుదారు గతంలో స్కామ్ సందేశంలో నివేదించబడింది. డబ్బు పంపవద్దు."
+  hi: "इस भुगतानकर्ता की सूचना पहले एक स्कैम संदेश में दी गई थी। कोई पैसा न भेजें।"
+  next_steps:
+    - "Do not proceed with the payment"
+    - "Report this payee to cyber crime helpline 1930"
+    - "Alert the merchant or person who provided this QR"
+
+story_link_ok:
+  title: "No Prior Scam Reports"
+  en: "This payee has no matching scam reports in our community database."
+  te: "ఈ చెల్లింపుదారుపై మా కమ్యూనిటీ డేటాబేస్‌లో స్కామ్ నివేదికలు లేవు."
+  hi: "हमारे समुदाय डेटाबेस में इस भुगतानकर्ता पर कोई स्कैम रिपोर्ट नहीं है।"
+  next_steps:
+    - "Continue verifying merchant identity before paying"
+
+ocr_qr_decoded:
+  title: "QR Code Read from Image"
+  en: "Successfully scanned and decoded the QR code from the uploaded image."
+  te: "అప్‌లోడ్ చేసిన చిత్రం నుండి క్యూఆర్ కోడ్ విజయవంతంగా డీకోడ్ చేయబడింది."
+  hi: "अपलोड की गई छवि से क्यूआर कोड को सफलतापूर्वक डिकोड किया गया।"
+  next_steps:
+    - "Review the safety analysis of the decoded QR"
+
+ocr_text_extracted:
+  title: "Text Read from Screenshot"
+  en: "Successfully extracted text from the uploaded screenshot for analysis."
+  te: "విశ్లేషణ కోసం స్క్రీన్‌షాట్ నుండి వచనం విజయవంతంగా సంగ్రహించబడింది."
+  hi: "विश्लेषण के लिए स्क्रीनशॉट से टेक्स्ट सफलतापूर्वक निकाला गया।"
+  next_steps:
+    - "Review the scam analysis of the extracted text"
+
+ocr_low_confidence:
+  title: "Image Unclear"
+  en: "The uploaded image could not be read clearly. Please paste the text directly."
+  te: "అప్‌లోడ్ చేసిన చిత్రం స్పష్టంగా చదవబడలేదు. దయచేసి వచనాన్ని నేరుగా అతికించండి."
+  hi: "अपलोड की गई छवि को स्पष्ट रूप से नहीं पढ़ा जा सका। कृपया टेक्स्ट को सीधे पेस्ट करें।"
+  next_steps:
+    - "Copy the message text and paste it into the check box"

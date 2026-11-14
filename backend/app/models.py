@@ -139,12 +139,35 @@ class Alert(SQLModel, table=True):
 # ---------------------------------------------------------------------------
 
 class FlaggedPayee(SQLModel, table=True):
-    """Community-flagged suspicious UPI IDs."""
+    """Community-flagged suspicious UPI IDs and URLs linked to scam stories."""
 
     __tablename__ = "flagged_payees"
 
     id: Optional[int] = Field(default=None, primary_key=True)
-    upi_id: str = Field(index=True, unique=True, max_length=80)
+    value: Optional[str] = Field(
+        default=None, index=True, max_length=200,
+        description="Flagged identifier: UPI VPA or URL",
+    )
+    upi_id: Optional[str] = Field(
+        default=None, index=True, max_length=80,
+        description="UPI VPA if kind is vpa",
+    )
+    kind: str = Field(
+        default="vpa", max_length=20,
+        description="Identifier kind: vpa or url",
+    )
+    source_message_id: Optional[int] = Field(
+        default=None, index=True,
+        description="ID of the scam message that cited this payee",
+    )
+    source_message_text: Optional[str] = Field(
+        default=None, max_length=500,
+        description="Snippet of the source message for quoting in alerts",
+    )
+    score: float = Field(
+        default=0.8,
+        description="Scam confidence score of the source story",
+    )
     reason: str = Field(max_length=200, default="community report")
     report_count: int = Field(default=1)
     created_at: datetime = Field(default_factory=_utcnow)
@@ -163,6 +186,14 @@ class Message(SQLModel, table=True):
     scan_id: Optional[int] = Field(default=None, index=True)
     text: str = Field(max_length=2000,
                       description="Message body submitted by user")
+    score: Optional[float] = Field(
+        default=None,
+        description="Scam score from detector",
+    )
+    labels_json: str = Field(
+        default="[]",
+        description="JSON array of scam category labels",
+    )
     language: Optional[str] = Field(default=None, max_length=10)
     source: str = Field(max_length=30, default="user_input",
                         description="user_input / ocr / voice")
