@@ -1,0 +1,343 @@
+{
+  "description": "30 QR scan evaluation scenarios per SPEC Section 8.2 counts: genuine at registered shop 8; swapped UPI ID 6; lookalike handle 4; story-linked 4; no registry 4; shop code without GPS 2; changed payee at an unregistered spot 2.",
+  "setup": {
+    "flagged_payees": [
+      {
+        "upi_id": "officer.cbi.investigation@okaxis",
+        "scam_type": "digital_arrest",
+        "reason": "CBI Digital arrest warrant extortion message"
+      },
+      {
+        "upi_id": "pmkisan.bonus.claim@oksbi",
+        "scam_type": "phishing",
+        "reason": "Fake PM-Kisan bonus APK distribution"
+      },
+      {
+        "upi_id": "electricity.bill.desk@ybl",
+        "scam_type": "utility_bill",
+        "reason": "Immediate electricity disconnection threat"
+      },
+      {
+        "upi_id": "lottery.winner.claim@paytm",
+        "scam_type": "lottery",
+        "reason": "Lottery prize processing fee advance scam"
+      }
+    ],
+    "baseline_scans": [
+      {
+        "coarse_lat": 17.399,
+        "coarse_lng": 78.470,
+        "upi_id": "tea.vendor@okaxis",
+        "count": 9
+      },
+      {
+        "coarse_lat": 17.395,
+        "coarse_lng": 78.475,
+        "upi_id": "paan.bhandar@okaxis",
+        "count": 9
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "SCEN-01",
+      "type": "genuine_at_registered_shop",
+      "description": "Real QR at Lakshmi Kirana Store (KIR-0001) scanned on-premise",
+      "payload": "upi://pay?pa=lakshmi.kirana@okaxis&pn=LakshmiStore&am=100.00",
+      "lat": 17.384,
+      "lng": 78.486,
+      "shop_code": "KIR-0001",
+      "expected_verdict": "VERIFIED"
+    },
+    {
+      "id": "SCEN-02",
+      "type": "genuine_at_registered_shop",
+      "description": "Real QR at Sai Ram Vegetables (KIR-0002) scanned on-premise",
+      "payload": "upi://pay?pa=sairam.veg@okaxis&pn=SaiRamVeg&am=50.00",
+      "lat": 17.385,
+      "lng": 78.487,
+      "shop_code": "KIR-0002",
+      "expected_verdict": "VERIFIED"
+    },
+    {
+      "id": "SCEN-03",
+      "type": "genuine_at_registered_shop",
+      "description": "Real QR at Venkata Fruits Corner (KIR-0003) scanned on-premise",
+      "payload": "upi://pay?pa=venkata.fruits@okaxis&pn=VenkataFruits&am=120.00",
+      "lat": 17.386,
+      "lng": 78.488,
+      "shop_code": "KIR-0003",
+      "expected_verdict": "VERIFIED"
+    },
+    {
+      "id": "SCEN-04",
+      "type": "genuine_at_registered_shop",
+      "description": "Real QR at Ganesha Medical Hall (KIR-0004) scanned on-premise",
+      "payload": "upi://pay?pa=ganesha.medical@okaxis&pn=GaneshaMedical&am=250.00",
+      "lat": 17.383,
+      "lng": 78.485,
+      "shop_code": "KIR-0004",
+      "expected_verdict": "VERIFIED"
+    },
+    {
+      "id": "SCEN-05",
+      "type": "genuine_at_registered_shop",
+      "description": "Real QR at Balaji Hardware (KIR-0005) scanned on-premise",
+      "payload": "upi://pay?pa=balaji.hardware@okaxis&pn=BalajiHardware&am=400.00",
+      "lat": 17.387,
+      "lng": 78.489,
+      "shop_code": "KIR-0005",
+      "expected_verdict": "VERIFIED"
+    },
+    {
+      "id": "SCEN-06",
+      "type": "genuine_at_registered_shop",
+      "description": "Real QR at Padma Textiles (KIR-0006) scanned on-premise",
+      "payload": "upi://pay?pa=padma.textiles@okaxis&pn=PadmaTextiles&am=850.00",
+      "lat": 17.382,
+      "lng": 78.484,
+      "shop_code": "KIR-0006",
+      "expected_verdict": "VERIFIED"
+    },
+    {
+      "id": "SCEN-07",
+      "type": "genuine_at_registered_shop",
+      "description": "Real QR at Raghav Sweets (KIR-0007) scanned on-premise",
+      "payload": "upi://pay?pa=raghav.sweets@okaxis&pn=RaghavSweets&am=150.00",
+      "lat": 17.388,
+      "lng": 78.490,
+      "shop_code": "KIR-0007",
+      "expected_verdict": "VERIFIED"
+    },
+    {
+      "id": "SCEN-08",
+      "type": "genuine_at_registered_shop",
+      "description": "Real QR at Durga Electronics (KIR-0008) scanned on-premise",
+      "payload": "upi://pay?pa=durga.electronics@okaxis&pn=DurgaElectronics&am=320.00",
+      "lat": 17.381,
+      "lng": 78.483,
+      "shop_code": "KIR-0008",
+      "expected_verdict": "VERIFIED"
+    },
+    {
+      "id": "SCEN-09",
+      "type": "swapped_upi_id",
+      "description": "Fraudulent sticker overlay with scammer UPI ID at Mahalakshmi Sarees (KIR-0009)",
+      "payload": "upi://pay?pa=swap.thief1@ybl&pn=FakeSarees",
+      "lat": 17.389,
+      "lng": 78.491,
+      "shop_code": "KIR-0009",
+      "expected_verdict": "DANGER"
+    },
+    {
+      "id": "SCEN-10",
+      "type": "swapped_upi_id",
+      "description": "Fraudulent sticker overlay with scammer UPI ID at Krishna Dairy (KIR-0010)",
+      "payload": "upi://pay?pa=swap.thief2@ybl&pn=FakeDairy",
+      "lat": 17.384,
+      "lng": 78.488,
+      "shop_code": "KIR-0010",
+      "expected_verdict": "DANGER"
+    },
+    {
+      "id": "SCEN-11",
+      "type": "swapped_upi_id",
+      "description": "Fraudulent sticker overlay with scammer UPI ID at Ravi Chicken Centre (KIR-0011)",
+      "payload": "upi://pay?pa=swap.thief3@ybl&pn=FakeChicken",
+      "lat": 17.386,
+      "lng": 78.485,
+      "shop_code": "KIR-0011",
+      "expected_verdict": "DANGER"
+    },
+    {
+      "id": "SCEN-12",
+      "type": "swapped_upi_id",
+      "description": "Fraudulent sticker overlay with scammer UPI ID at Anjali Flowers (KIR-0012)",
+      "payload": "upi://pay?pa=swap.thief4@ybl&pn=FakeFlowers",
+      "lat": 17.383,
+      "lng": 78.489,
+      "shop_code": "KIR-0012",
+      "expected_verdict": "DANGER"
+    },
+    {
+      "id": "SCEN-13",
+      "type": "swapped_upi_id",
+      "description": "Fraudulent sticker overlay with scammer UPI ID at Srinivasa Bakery (KIR-0013)",
+      "payload": "upi://pay?pa=swap.thief5@ybl&pn=FakeBakery",
+      "lat": 17.387,
+      "lng": 78.484,
+      "shop_code": "KIR-0013",
+      "expected_verdict": "DANGER"
+    },
+    {
+      "id": "SCEN-14",
+      "type": "swapped_upi_id",
+      "description": "Fraudulent sticker overlay with scammer UPI ID at Hanuman Stationery (KIR-0014)",
+      "payload": "upi://pay?pa=swap.thief6@ybl&pn=FakeStationery",
+      "lat": 17.382,
+      "lng": 78.490,
+      "shop_code": "KIR-0014",
+      "expected_verdict": "DANGER"
+    },
+    {
+      "id": "SCEN-15",
+      "type": "lookalike_handle",
+      "description": "Phishing VPA spoofing State Bank of India customer care",
+      "payload": "upi://pay?pa=sbi.helpdesk@okaxis&pn=SBIHelpdesk",
+      "lat": 17.500,
+      "lng": 78.600,
+      "shop_code": null,
+      "expected_verdict": "DANGER"
+    },
+    {
+      "id": "SCEN-16",
+      "type": "lookalike_handle",
+      "description": "Phishing VPA spoofing Paytm refund department",
+      "payload": "upi://pay?pa=paytm.refund@ybl&pn=PaytmRefund",
+      "lat": 17.500,
+      "lng": 78.600,
+      "shop_code": null,
+      "expected_verdict": "DANGER"
+    },
+    {
+      "id": "SCEN-17",
+      "type": "lookalike_handle",
+      "description": "Phishing VPA spoofing Google Pay customer support",
+      "payload": "upi://pay?pa=support.gpay@okaxis&pn=GPaySupport",
+      "lat": 17.500,
+      "lng": 78.600,
+      "shop_code": null,
+      "expected_verdict": "DANGER"
+    },
+    {
+      "id": "SCEN-18",
+      "type": "lookalike_handle",
+      "description": "Phishing VPA spoofing PhonePe customer care",
+      "payload": "upi://pay?pa=phonepe.care@ybl&pn=PhonePeCare",
+      "lat": 17.500,
+      "lng": 78.600,
+      "shop_code": null,
+      "expected_verdict": "DANGER"
+    },
+    {
+      "id": "SCEN-19",
+      "type": "story_linked",
+      "description": "QR scan matching flagged UPI ID from a digital arrest threat message",
+      "payload": "upi://pay?pa=officer.cbi.investigation@okaxis&pn=CBIInvest",
+      "lat": 17.500,
+      "lng": 78.600,
+      "shop_code": null,
+      "expected_verdict": "DANGER"
+    },
+    {
+      "id": "SCEN-20",
+      "type": "story_linked",
+      "description": "QR scan matching flagged UPI ID from a fake PM-Kisan government scheme message",
+      "payload": "upi://pay?pa=pmkisan.bonus.claim@oksbi&pn=PMKisan",
+      "lat": 17.500,
+      "lng": 78.600,
+      "shop_code": null,
+      "expected_verdict": "DANGER"
+    },
+    {
+      "id": "SCEN-21",
+      "type": "story_linked",
+      "description": "QR scan matching flagged UPI ID from an electricity bill scam SMS",
+      "payload": "upi://pay?pa=electricity.bill.desk@ybl&pn=PowerDesk",
+      "lat": 17.500,
+      "lng": 78.600,
+      "shop_code": null,
+      "expected_verdict": "DANGER"
+    },
+    {
+      "id": "SCEN-22",
+      "type": "story_linked",
+      "description": "QR scan matching flagged UPI ID from a prize lottery fee scam SMS",
+      "payload": "upi://pay?pa=lottery.winner.claim@paytm&pn=PrizeAgent",
+      "lat": 17.500,
+      "lng": 78.600,
+      "shop_code": null,
+      "expected_verdict": "DANGER"
+    },
+    {
+      "id": "SCEN-23",
+      "type": "no_registry",
+      "description": "Scan at unregistered location for benign personal transfer to Sunita Sharma",
+      "payload": "upi://pay?pa=sunita.sharma@okaxis&pn=SunitaSharma",
+      "lat": 17.520,
+      "lng": 78.620,
+      "shop_code": null,
+      "expected_verdict": "UNVERIFIED"
+    },
+    {
+      "id": "SCEN-24",
+      "type": "no_registry",
+      "description": "Scan at unregistered location for benign personal transfer to Mohan Reddy",
+      "payload": "upi://pay?pa=mohan.reddy@okicici&pn=MohanReddy",
+      "lat": 17.520,
+      "lng": 78.620,
+      "shop_code": null,
+      "expected_verdict": "UNVERIFIED"
+    },
+    {
+      "id": "SCEN-25",
+      "type": "no_registry",
+      "description": "Scan at unregistered location for benign personal transfer to Kavitha P",
+      "payload": "upi://pay?pa=kavitha.p@okhdfcbank&pn=KavithaP",
+      "lat": 17.522,
+      "lng": 78.622,
+      "shop_code": null,
+      "expected_verdict": "UNVERIFIED"
+    },
+    {
+      "id": "SCEN-26",
+      "type": "no_registry",
+      "description": "Scan at unregistered location for benign personal transfer to Venkat Rao",
+      "payload": "upi://pay?pa=venkat.rao@oksbi&pn=VenkatRao",
+      "lat": 17.525,
+      "lng": 78.625,
+      "shop_code": null,
+      "expected_verdict": "UNVERIFIED"
+    },
+    {
+      "id": "SCEN-27",
+      "type": "shop_code_without_gps",
+      "description": "Shop code KIR-0015 entered manually with GPS disabled, UPI matches Priya Beauty Parlour",
+      "payload": "upi://pay?pa=priya.beauty@okaxis&pn=PriyaBeauty",
+      "lat": null,
+      "lng": null,
+      "shop_code": "KIR-0015",
+      "expected_verdict": "VERIFIED"
+    },
+    {
+      "id": "SCEN-28",
+      "type": "shop_code_without_gps",
+      "description": "Shop code KIR-0016 entered manually with GPS disabled, UPI matches Suresh Mobile Repairs",
+      "payload": "upi://pay?pa=suresh.mobiles@okaxis&pn=SureshMobiles",
+      "lat": null,
+      "lng": null,
+      "shop_code": "KIR-0016",
+      "expected_verdict": "VERIFIED"
+    },
+    {
+      "id": "SCEN-29",
+      "type": "changed_payee_at_unregistered_spot",
+      "description": "Unregistered tea stall cell with established 9-scan baseline for tea.vendor@okaxis, suddenly receives unexpected scan",
+      "payload": "upi://pay?pa=intruder.chai@okaxis&pn=IntruderChai",
+      "lat": 17.399,
+      "lng": 78.470,
+      "shop_code": null,
+      "expected_verdict": "CAUTION"
+    },
+    {
+      "id": "SCEN-30",
+      "type": "changed_payee_at_unregistered_spot",
+      "description": "Unregistered paan stall cell with established 9-scan baseline for paan.bhandar@okaxis, suddenly receives unexpected scan",
+      "payload": "upi://pay?pa=unknown.paan@okaxis&pn=UnknownPaan",
+      "lat": 17.395,
+      "lng": 78.475,
+      "shop_code": null,
+      "expected_verdict": "CAUTION"
+    }
+  ]
+}

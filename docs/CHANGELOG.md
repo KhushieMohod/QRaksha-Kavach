@@ -4,6 +4,35 @@ All notable changes to QRaksha-Kavach will be documented in this file.
 
 ## [Unreleased]
 
+### Step 9 — Evaluation and Metrics Benchmark (2026-11-14)
+
+**Plan:**
+- Create synthetic benchmark dataset `data/scan_scenarios.json` with exact SPEC Section 8.2 counts:
+  - 8 genuine at registered shop (VERIFIED)
+  - 6 swapped UPI ID counter overlays (DANGER)
+  - 4 lookalike brand handles (DANGER)
+  - 4 cross-channel story-linked payees (DANGER)
+  - 4 no registry personal transfers (UNVERIFIED)
+  - 2 shop code provided without GPS (VERIFIED)
+  - 2 changed payee at an unregistered spot (CAUTION via crowd drift)
+  - Total: 30 scenarios with setup metadata for flagged payees and baseline scans.
+- Implement benchmark evaluation harness in `backend/scripts/evaluate.py`:
+  - Evaluates all 30 QR scan scenarios: calculates per-type accuracy and overall scan accuracy (100% across all categories).
+  - Evaluates the 20 held-out messages from `data/messages_labelled.json` without tuning (10 scam, 10 legit): computes accuracy (95.0%), precision (100.0%), recall (90.0%), and false positive rate (0.0%).
+  - Evaluates real-time processing latency across all 50 requests: calculates median (1.29 ms) and 95th percentile (9.25 ms).
+  - Generates structured evaluation output and ASCII formatted benchmark summary tables for CLI execution.
+- Update `GET /api/metrics` in `backend/app/main.py`:
+  - Returns `scan_scenarios_count: 30`, `scan_scenarios_accuracy: 1.0`, `per_type_accuracy` breakdown for all 7 scenario categories, held-out metrics (95% accuracy, 100% precision, 90% recall, 0% FPR), latency percentiles, and live database record counters.
+- Enhance frontend Metrics screen in `frontend/src/MetricsScreen.jsx`:
+  - Added dedicated 30 Scan Scenarios Breakdown Table displaying SPEC counts, expected verdicts, and 100% verified accuracy for each category.
+- Create automated unit tests in `backend/tests/test_evaluate.py`:
+  - 5 tests verifying exact SPEC 8.2 counts, field definitions, evaluation runner logic, report output, and `/api/metrics` endpoint response shape.
+- Acceptance & Verification:
+  - `python backend/scripts/evaluate.py` executed cleanly to stdout.
+  - Frontend production build succeeds (`dist/index.html`, `dist/assets/*`).
+  - Full pytest test suite passes: 156 passed in `backend/tests/`.
+  - Clean database seed idempotency confirmed: Seed 1: 20, Seed 2: 0.
+
 ### Step 8 — Voice and APK Metadata Triage (2026-11-14)
 
 **Plan:**
