@@ -4,6 +4,40 @@ All notable changes to QRaksha-Kavach will be documented in this file.
 
 ## [Unreleased]
 
+### Step 11 — Level 1 Submission and Final Verification (2026-11-14)
+
+**Plan:**
+- Create `docs/demo_script.md`:
+  - Detailed ~4-minute presenter walkthrough covering all four Section 11 beats:
+    - Beat 1: Counter QR swap & instant merchant dashboard alert.
+    - Beat 2: Cross-channel scam story linking (digital arrest SMS $\to$ flagged VPA $\to$ DANGER scan).
+    - Beat 3: Multimodal defense (screenshot OCR, voice notes, and static APK triage).
+    - Beat 4: Live metrics breakdown and solution differentiation.
+- Create `docs/viva_notes.md`:
+  - Comprehensive viva examination guide providing clear, technical answers to the six core questions from SPEC Section 11:
+    - Comparison with ScamDekho and existing payment apps.
+    - Practical merchant adoption pathways (bank/PSP pilot).
+    - Handling inaccurate or disabled GPS with safe `UNVERIFIED` fallback and manual shop codes.
+    - Centralized, bounded role of the LLM and 100% rules-only offline mode.
+    - User privacy safeguards (coarse ~111m grid, synthetic data, zero credential collection).
+    - Transparent division of AI assistance vs human architecture and governance.
+- Create `docs/ai_disclosure.md`:
+  - Complete, formal disclosure of AI tools (Antigravity AI Assistant, Gemini model) and explicit listing of all external third-party code and libraries across backend and frontend.
+- Update `README.md`:
+  - Added Level 1 submission checklist and complete documentation index.
+- Acceptance & Verification:
+  - Run `python backend/scripts/evaluate.py`: 100% scan scenario accuracy (30/30), 95% held-out scam text accuracy, 0% FPR, sub-10ms latencies.
+  - Run full test suite with `pytest`: 156 passed in `backend/tests/`.
+  - Verify clean database seed idempotency (`Seed 1: 20, Seed 2: 0`).
+  - Create Git tag `v1.0-level1`.
+
+**Files created/modified:**
+- `docs/demo_script.md` (created)
+- `docs/viva_notes.md` (created)
+- `docs/ai_disclosure.md` (created)
+- `README.md` (modified)
+- `docs/CHANGELOG.md` (modified)
+
 ### Step 10 — Extension Guide, Architecture and Docker Packaging (2026-11-14)
 
 **Plan:**

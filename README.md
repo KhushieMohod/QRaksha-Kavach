@@ -253,11 +253,27 @@ In accordance with academic transparency and responsible AI development guidelin
 
 ---
 
-## 10. Documentation Links
+## 10. Submission Checklist & Documentation Index
 
-- [System Architecture & Diagrams](docs/architecture.md)
-- [How to Add a Detector in ~10 Minutes](docs/extension.md)
-- [Project Changelog & Milestones](docs/CHANGELOG.md)
+### Level 1 Submission Verification Checklist (SPEC Section 11)
+
+| Requirement | Artifact / Verification | Status |
+| :--- | :--- | :--- |
+| **Working App from Fresh Clone** | Single-command seed + Docker Compose / local startup verified | Completed |
+| **Complete Automated Test Suite** | 156 passed in `backend/tests/` (100% pass rate) | Completed |
+| **System Benchmark & Accuracy** | 30/30 scan scenarios (100%), 95% held-out scam text, 0% FPR | Completed |
+| **Live Demonstration Walkthrough** | 4-minute demo script with zero manual DB edits | Completed |
+| **Viva Examination Defense** | Comprehensive Q&A covering adoption, GPS fallback, LLM & privacy | Completed |
+| **AI Tools & External Code Disclosure** | Detailed disclosure of models, libraries, and human oversight | Completed |
+| **Honest Pilot Limitations** | Documented pilot assumptions, coarse GPS grid, and APK bounds | Completed |
+
+### Core Project Documentation Links
+- [System Architecture & Diagrams](docs/architecture.md): Complete architecture with 4 Mermaid diagrams.
+- [4-Minute Live Demonstration Script](docs/demo_script.md): Timed cues and presentation walkthrough.
+- [Viva Defense Notes & Q&A](docs/viva_notes.md): Answers to all evaluation and examination questions.
+- [AI Tools & External Code Disclosure](docs/ai_disclosure.md): Transparent disclosure of AI use and dependencies.
+- [How to Add a Detector in ~10 Minutes](docs/extension.md): Developer extensibility guide.
+- [Project Changelog & Milestones](docs/CHANGELOG.md): Complete chronological record of all steps.
 
 ---
 
