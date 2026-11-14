@@ -44,25 +44,209 @@ digit_substitutions:
   "4": "a"
   "5": "s"
 
-# Scam categories and weights for scam_text detector (SPEC Section 5)
-scam_categories:
-  otp_pin_request: 0.7
-  kyc_update: 0.5
-  digital_arrest: 0.8
-  apk_install: 0.7
-  scan_to_receive: 0.7
-  prize_refund: 0.5
-  parcel_customs: 0.5
-  impersonation_authority: 0.5
-  payment_demand: 0.4
-  urgency_threat: 0.3
-  link_shortener: 0.3
+# ---------------------------------------------------------------------------
+# Scam categories, weights and patterns for scam_text detector (SPEC Section 5)
+# Combine matches as: 1 - product(1 - weight_i)
+# Each category has ~10 patterns in English + transliterated Hindi/Telugu.
+# Patterns marked "needs human check" are for native script.
+# ---------------------------------------------------------------------------
 
+scam_categories:
+  otp_pin_request:
+    weight: 0.7
+    patterns:
+      - "share your otp"
+      - "share otp"
+      - "send otp"
+      - "send your otp"
+      - "enter otp"
+      - "enter your otp"
+      - "share your pin"
+      - "share pin"
+      - "tell your otp"
+      - "tell otp"
+      - "otp batao"               # Hindi transliterated
+      - "otp bhejo"               # Hindi transliterated
+      - "otp ivvandi"             # Telugu transliterated
+      - "otp cheppandi"           # Telugu transliterated
+
+  kyc_update:
+    weight: 0.5
+    patterns:
+      - "kyc expires"
+      - "kyc update"
+      - "update kyc"
+      - "update your kyc"
+      - "kyc verification"
+      - "verify kyc"
+      - "kyc suspended"
+      - "complete kyc"
+      - "kyc pending"
+      - "kyc mandatory"
+      - "kyc karo"                # Hindi transliterated
+      - "kyc cheyyandi"           # Telugu transliterated
+
+  digital_arrest:
+    weight: 0.8
+    patterns:
+      - "digital arrest"
+      - "you are under arrest"
+      - "under digital arrest"
+      - "cyber crime arrest"
+      - "arrest warrant"
+      - "police arrest"
+      - "cbi arrest"
+      - "this is cbi"
+      - "this is cyber cell"
+      - "this is police"
+      - "gireftaar"               # Hindi transliterated
+      - "arrest ayyaru"           # Telugu transliterated
+
+  apk_install:
+    weight: 0.7
+    patterns:
+      - "install apk"
+      - "download apk"
+      - "install app"
+      - "install application"
+      - ".apk"
+      - "apk file"
+      - "download and install"
+      - "install this"
+      - "apk update"
+      - "apk download"
+      - "apk install karo"        # Hindi transliterated
+      - "apk install cheyyi"      # Telugu transliterated
+
+  scan_to_receive:
+    weight: 0.7
+    patterns:
+      - "scan to receive"
+      - "scan this qr to receive"
+      - "scan qr to receive"
+      - "scan qr code to receive"
+      - "scan this qr to get"
+      - "scan qr to get money"
+      - "scan this qr"
+      - "scan qr"
+      - "scan karo paisa milega"  # Hindi transliterated
+      - "scan cheyyi dabbu vastay" # Telugu transliterated
+      - "scan to collect"
+      - "scan qr for refund"
+      - "pay to receive"
+      - "scan to get your money"
+
+  prize_refund:
+    weight: 0.5
+    patterns:
+      - "you won"
+      - "you have won"
+      - "congratulations you won"
+      - "prize money"
+      - "lottery winner"
+      - "claim your prize"
+      - "claim your refund"
+      - "claim refund"
+      - "refund of rs"
+      - "your refund"
+      - "refund"
+      - "cashback"
+      - "inam mila"               # Hindi transliterated
+      - "prize geltaru"           # Telugu transliterated
+
+  parcel_customs:
+    weight: 0.5
+    patterns:
+      - "parcel stuck"
+      - "customs fee"
+      - "customs clearance"
+      - "delivery fee required"
+      - "courier charges"
+      - "parcel held"
+      - "parcel seized"
+      - "pay customs duty"
+      - "pay delivery charges"
+      - "parcel roka gaya"        # Hindi transliterated
+      - "parcel aagipoyindi"      # Telugu transliterated
+
+  impersonation_authority:
+    weight: 0.5
+    patterns:
+      - "this is police"
+      - "this is cbi"
+      - "this is rbi"
+      - "this is cyber cell"
+      - "calling from the bank"
+      - "bank officer"
+      - "reserve bank"
+      - "income tax department"
+      - "tax notice"
+      - "government official"
+      - "bank manager"
+      - "enforcement directorate"
+      - "police se bol raha"      # Hindi transliterated
+      - "cbi nundi call"          # Telugu transliterated
+
+  payment_demand:
+    weight: 0.4
+    patterns:
+      - "transfer rs"
+      - "transfer amount"
+      - "send rs"
+      - "send money"
+      - "pay rs"
+      - "deposit rs"
+      - "pay immediately"
+      - "pay now"
+      - "transfer immediately"
+      - "paisa bhejo"             # Hindi transliterated
+      - "dabbu pampu"             # Telugu transliterated
+
+  urgency_threat:
+    weight: 0.3
+    patterns:
+      - "within 24 hours"
+      - "within 1 hour"
+      - "account blocked"
+      - "account suspended"
+      - "account will be blocked"
+      - "act immediately"
+      - "urgent action"
+      - "last warning"
+      - "final notice"
+      - "immediately required"
+      - "jaldi karo"              # Hindi transliterated
+      - "vెంటనే"                  # Telugu (needs human check)
+
+  link_shortener:
+    weight: 0.3
+    patterns:
+      - "bit.ly/"
+      - "tinyurl.com/"
+      - "goo.gl/"
+      - "t.co/"
+      - "cutt.ly/"
+      - "short.url/"
+      - "is.gd/"
+      - "rb.gy/"
+      - "ow.ly/"
+      - "click here"
+
+# ---------------------------------------------------------------------------
 # Negation phrases that suppress scam matches within 6 words (SPEC Section 6.5)
+# ---------------------------------------------------------------------------
 negation_phrases:
   - "never share"
   - "do not share"
   - "don't share"
   - "will never ask"
   - "never disclose"
-
+  - "no one should ask"
+  - "bank will never"
+  - "we never ask"
+  - "never give"
+  - "do not give"
+  - "don't give"
+  - "will never call"
+  - "kabhi mat do"              # Hindi: never give
+  - "evvariki ivvakandi"        # Telugu: don't give to anyone

@@ -53,3 +53,33 @@ insufficient_baseline_data:
   hi: "भुगतान पैटर्न को सत्यापित करने के लिए इस स्थान पर पर्याप्त स्कैन इतिहास नहीं है।"
   next_steps:
     - "Verify payee identity directly with the merchant"
+
+
+scam_text_danger:
+  title: "Scam Message Detected"
+  en: "This message contains strong indicators of a scam. Do not follow any instructions in it."
+  te: "ఈ మెసేజ్ లో స్కామ్ సూచనలు ఉన్నాయి. ఇందులోని సూచనలు పాటించకండి."
+  hi: "इस संदेश में स्कैम के मजबूत संकेत हैं। इसमें दिए गए किसी भी निर्देश का पालन न करें।"
+  next_steps:
+    - "Do not click any links or download any files"
+    - "Do not share OTP, PIN, or passwords"
+    - "Report to cyber crime helpline 1930"
+    - "Block the sender"
+
+scam_text_caution:
+  title: "Suspicious Message"
+  en: "This message has some suspicious characteristics. Proceed with caution."
+  te: "ఈ మెసేజ్ కొన్ని అనుమానాస్పద లక్షణాలు కలిగి ఉంది. జాగ్రత్తగా ముందుకు సాగండి."
+  hi: "इस संदेश में कुछ संदिग्ध विशेषताएं हैं। सावधानी से आगे बढ़ें।"
+  next_steps:
+    - "Verify the sender's identity independently"
+    - "Do not share personal or financial details"
+    - "Contact your bank directly if it claims to be from a bank"
+
+scam_text_ok:
+  title: "No Scam Signs Found"
+  en: "No scam patterns were detected in this message. This is not a guarantee of safety."
+  te: "ఈ మెసేజ్ లో స్కామ్ విధానాలు కనుగొనబడలేదు. ఇది భద్రత హామీ కాదు."
+  hi: "इस संदेश में कोई स्कैम पैटर्न नहीं मिला। यह सुरक्षा की गारंटी नहीं है।"
+  next_steps:
+    - "Stay alert for unusual requests"

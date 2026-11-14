@@ -5,6 +5,7 @@ from app.detectors import (
     handle_lookalike,
     qr_parser,
     registry_binding,
+    scam_text,
 )
 
 __all__ = [
@@ -12,4 +13,5 @@ __all__ = [
     "handle_lookalike",
     "registry_binding",
     "crowd_baseline",
+    "scam_text",
 ]

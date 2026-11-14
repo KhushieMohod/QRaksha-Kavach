@@ -4,6 +4,48 @@ All notable changes to QRaksha-Kavach will be documented in this file.
 
 ## [Unreleased]
 
+### Step 4 — Scam Text Detector & LLM Integration (2026-11-14)
+
+**Plan:**
+- Implement centralized LLM client in `backend/app/llm.py` (SPEC Sections 3, 14.2):
+  - Single entry point `call_llm()` with temperature 0 for deterministic outputs.
+  - 8-second request timeout (`llm_timeout_seconds` from `thresholds.yaml`).
+  - Response caching in SQLite `llm_cache` table keyed by SHA-256 prompt hash.
+  - Transparent rules-only fallback when offline (`LLM_OFFLINE=1`) or when API is unreachable.
+  - Structured prompt building requesting score, labels, and exact substring spans without generating dynamic safety advice (Rule 8).
+- Configure all 11 scam categories in `backend/app/config/rules.yaml` with weighted scoring and ~10 patterns in English and transliterated Hindi/Telugu:
+  - `otp_pin_request` (0.7), `kyc_update` (0.5), `digital_arrest` (0.8), `apk_install` (0.7), `scan_to_receive` (0.7), `prize_refund` (0.5), `parcel_customs` (0.5), `impersonation_authority` (0.5), `payment_demand` (0.4), `urgency_threat` (0.3), `link_shortener` (0.3).
+  - Native script patterns marked "needs human check".
+  - Negation phrases (`never share`, `do not share`, `will never ask`, etc.) suppressing pattern matches within 6 words before the match.
+- Implement two-layer detector in `backend/app/detectors/scam_text.py` (SPEC Section 6.5):
+  - Layer 1 (Rules): Combines matched weights as $1 - \prod(1 - w_i)$ and applies 6-word negation suppression.
+  - Layer 2 (LLM): Parses JSON score and labels; strictly verifies that every span is an exact substring of the input text, discarding invalid responses.
+  - Final score: $\max(\text{rule\_score}, \text{llm\_score})$.
+  - Mapped to severity levels using thresholds: score $\ge 0.8 \rightarrow$ `danger`, $\ge 0.5 \rightarrow$ `caution`, $< 0.5 \rightarrow$ `ok`.
+- Create synthetic dataset in `data/messages_labelled.json`:
+  - 50 messages total (25 scam, 25 legit) split into 30 development messages and 20 held-out test messages.
+  - Tuned patterns exclusively on the 30 dev messages (achieving 100% dev accuracy).
+- Add centralized explanation keys (`scam_text_danger`, `scam_text_caution`, `scam_text_ok`) in `backend/app/config/explanations.yaml`.
+- Export `scam_text` detector in `backend/app/detectors/__init__.py`.
+- Create test suite in `backend/tests/test_scam_text.py`:
+  - Test all 7 rows from SPEC Table 6.5.
+  - Test weight combination formula and 6-word negation window.
+  - Test offline mode (`LLM_OFFLINE=1`), SQLite cache hit, and span validation.
+  - Evaluate on the 20 held-out messages: Accuracy 95.0%, Precision 100.0%, Recall 90.0%, FPR 0.0%.
+- Acceptance: Full test suite passes (92 tests) and clean database seed idempotency confirmed.
+
+**Files created/modified:**
+- `backend/app/llm.py` (created)
+- `backend/app/detectors/scam_text.py` (created)
+- `data/messages_labelled.json` (created)
+- `backend/tests/test_scam_text.py` (created)
+- `backend/app/config/rules.yaml` (modified)
+- `backend/app/config/explanations.yaml` (modified)
+- `backend/app/detectors/__init__.py` (modified)
+- `docs/CHANGELOG.md` (modified)
+
+---
+
 ### Step 3 — Registry Binding & Merchant Alerts (2026-11-14)
 
 **Plan:**
