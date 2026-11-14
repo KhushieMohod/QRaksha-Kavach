@@ -4,6 +4,47 @@ All notable changes to QRaksha-Kavach will be documented in this file.
 
 ## [Unreleased]
 
+### Step 10 — Extension Guide, Architecture and Docker Packaging (2026-11-14)
+
+**Plan:**
+- Create developer extension guide `docs/extension.md`:
+  - Step-by-step 10-minute guide for adding a new `Signal` detector.
+  - Explains the non-negotiable architectural principles (Signal contract, YAML configuration rules, centralized safety explanations, hierarchical fusion, comprehensive testing).
+  - Provides a complete copy-pasteable walkthrough implementing an "Excessive Payment Amount Detector" (`amount_limit.py`) with YAML configs, explanations, fusion integration, and unit tests.
+- Create system architecture guide `docs/architecture.md`:
+  - Detailed system design with Mermaid diagrams: High-Level System Architecture, Hierarchical Risk Fusion Flowchart, Dual-Layer Text Detection & LLM Centralization Sequence Diagram, and Database Entity-Relationship (ER) diagram.
+  - Documents all 8 specialized detectors, their input contracts, detection algorithms, and privacy safeguards.
+- Revamp `README.md`:
+  - Comprehensive documentation satisfying SPEC Section 14.4 & Section 18:
+    - Single-command seed instructions (`python backend/scripts/seed.py`).
+    - Local development setup for Python backend and React Vite PWA.
+    - Docker Compose instructions (`docker compose up --build`).
+    - 4-step live demonstration walkthrough matching SPEC Section 11.
+    - Honest 20-shop pilot limits & assumptions (geometry, coarse GPS, static APK metadata, pre-cached speech transcripts).
+    - AI-use disclosure (Antigravity assistant under Sovereign Command Protocol, hardcoded safety advice, rules-only offline guarantee).
+- Containerization & Packaging:
+  - Create `backend/Dockerfile`: Multi-stage / optimized Python 3.11 slim image containing system dependencies (Tesseract OCR with `eng+tel` language packs, headless OpenCV `libgl1`, `libglib2.0-0`, `curl`), pinned requirements, and healthcheck.
+  - Create `frontend/nginx.conf`: Nginx SPA fallback routing and reverse proxy rules for `/api/` and `/health`.
+  - Create `frontend/Dockerfile`: Multi-stage build (Node 20 Alpine builder + Nginx Alpine runner).
+  - Create `docker-compose.yml`: Multi-container composition linking `backend` and `frontend` with volume persistence and healthchecks.
+  - Update `.env.example`: Detailed configuration template with safe defaults and offline settings (`LLM_OFFLINE=1`).
+- Acceptance & Verification:
+  - Clean state database seed idempotency confirmed (`Seed 1: 20 added, Seed 2: 0 added`).
+  - API `/health` endpoint responds with 200 OK.
+  - Frontend production build verified (`dist/index.html` and assets).
+  - Full pytest test suite passes: 156 passed in `backend/tests/`.
+
+**Files created/modified:**
+- `docs/extension.md` (created)
+- `docs/architecture.md` (created)
+- `backend/Dockerfile` (created)
+- `frontend/nginx.conf` (created)
+- `frontend/Dockerfile` (created)
+- `docker-compose.yml` (created)
+- `.env.example` (modified)
+- `README.md` (modified)
+- `docs/CHANGELOG.md` (modified)
+
 ### Step 9 — Evaluation and Metrics Benchmark (2026-11-14)
 
 **Plan:**
