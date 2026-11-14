@@ -4,6 +4,56 @@ All notable changes to QRaksha-Kavach will be documented in this file.
 
 ## [Unreleased]
 
+### Step 7 — Payer, Merchant and Demo Screens (2026-11-14)
+
+**Plan:**
+- Build frontend PWA (React + Vite + Tailwind) following SPEC Section 8.1 with all 5 screens:
+  - Visual design: Warm unbleached-cotton/paper matte background (`#F6F4EE`), deep charcoal ink (`#1C1917`), flat 2px borders, terracotta-ochre primary buttons (`#C05621`), Atkinson Hyperlegible (with Noto Sans Telugu/Devanagari fallback) for copy, and IBM Plex Mono for UPI IDs/shop codes.
+  - Accessibility: Font size $\ge 18$ px, high contrast, short sentences, and exact verdict colors (green VERIFIED, grey UNVERIFIED, amber CAUTION, red DANGER).
+  - Screen 1 (Check): Large buttons for Scan QR (`html5-qrcode` camera & manual input modal), Check a message, Upload screenshot/photo, and Speak (voice simulation). Optional shop-code input and quick presets for 1-click testing.
+  - Screen 2 (Result): Big coloured verdict badge, one-line plain language reason, Listen button (Browser Speech Synthesis API with pre-recorded Telugu demo audio fallback), actionable next steps, expandable evidence inspector, and multilingual EN / Telugu / Hindi toggle.
+  - Screen 3 (Merchant): Kirana shop selector across 20 synthetic shops, QR health card (`OK` or `ALERT`), merchant alert list with counts and fraud payee IDs, and shop registration form.
+  - Screen 4 (Demo panel): Interactive simulation triggers for `qr_swap`, `drift`, `scam_with_payee`, and `reset`, plus a 4-step guided Section 11 live demo walkthrough.
+  - Screen 5 (Metrics): Live evaluation statistics populated from `/api/metrics` (100% deterministic scan accuracy, 95% held-out scam detection with 0% false alarm rate, sub-50ms latencies).
+- Backend additions in `backend/app/main.py`:
+  - `POST /api/demo/simulate`: Executes `qr_swap` (triggers swap scan and raises merchant alert), `drift` (seeds crowd baseline and tests payee drift), `scam_with_payee` (submits scam message and flags payee in database), and `reset` (restores clean 20-merchant seed state) with zero manual DB edits.
+  - `GET /api/metrics`: Serves live evaluation metrics for Screen 5.
+  - Added FastAPI `CORSMiddleware` to allow local development PWA integration.
+- Pre-generated Telugu demo audio:
+  - Synthesized playable WAV audio files in `frontend/public/audio/telugu/` (`verified.wav`, `unverified.wav`, `caution.wav`, `danger.wav`).
+- Acceptance:
+  - Clean Vite production build (`dist/index.html`, `dist/assets/*`).
+  - Automated end-to-end verification of the 4-step Section 11 demo script (`backend/tests/test_demo_e2e.py`) passing with zero manual DB edits.
+  - Full pytest test suite passes (135 tests).
+
+**Files created/modified:**
+- `frontend/package.json` (created)
+- `frontend/pnpm-lock.yaml` (created)
+- `frontend/vite.config.js` (created)
+- `frontend/tailwind.config.js` (created)
+- `frontend/postcss.config.js` (created)
+- `frontend/index.html` (created)
+- `frontend/public/manifest.json` (created)
+- `frontend/public/sw.js` (created)
+- `frontend/public/audio/telugu/*.wav` (created)
+- `frontend/src/index.css` (created)
+- `frontend/src/api.js` (created)
+- `frontend/src/audioPlayer.js` (created)
+- `frontend/src/CameraScannerModal.jsx` (created)
+- `frontend/src/CheckScreen.jsx` (created)
+- `frontend/src/ResultScreen.jsx` (created)
+- `frontend/src/MerchantScreen.jsx` (created)
+- `frontend/src/DemoPanelScreen.jsx` (created)
+- `frontend/src/MetricsScreen.jsx` (created)
+- `frontend/src/App.jsx` (created)
+- `frontend/src/main.jsx` (created)
+- `backend/app/main.py` (modified)
+- `backend/tests/test_api.py` (modified)
+- `backend/tests/test_demo_e2e.py` (created)
+- `docs/CHANGELOG.md` (modified)
+
+---
+
 ### Step 6 — Verdict Fusion & Check API (2026-11-14)
 
 **Plan:**

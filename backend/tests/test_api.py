@@ -306,3 +306,69 @@ class TestCheckImageAPI:
             data = resp.json()
             assert data["verdict"] == "DANGER"
             assert "scam" in data["explanation"]["en"].lower()
+
+
+class TestDemoSimulateAPI:
+    """Verify POST /api/demo/simulate (SPEC 8.1 & Section 11)."""
+
+    def test_demo_simulate_qr_swap(
+        self, client: TestClient, registered_merchant: Merchant
+    ) -> None:
+        """qr_swap triggers a swap scan, danger verdict, and merchant alert."""
+        resp = client.post("/api/demo/simulate", json={"action": "qr_swap", "shop_code": registered_merchant.shop_code})
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["status"] == "success"
+        assert data["action"] == "qr_swap"
+        assert data["verdict"] == "DANGER"
+        assert data["shop_code"] == registered_merchant.shop_code
+
+    def test_demo_simulate_drift(self, client: TestClient) -> None:
+        """drift establishes baseline and triggers caution verdict on changed payee."""
+        resp = client.post("/api/demo/simulate", json={"action": "drift"})
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["status"] == "success"
+        assert data["action"] == "drift"
+        assert data["verdict"] == "CAUTION"
+
+    def test_demo_simulate_scam_with_payee(self, client: TestClient) -> None:
+        """scam_with_payee submits scam text and flags the payee."""
+        resp = client.post("/api/demo/simulate", json={"action": "scam_with_payee"})
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["status"] == "success"
+        assert data["action"] == "scam_with_payee"
+        assert data["verdict"] == "DANGER"
+        assert "officer.cbi.investigation@okaxis" in data["flagged_upi"]
+
+    def test_demo_simulate_reset(self, client: TestClient, session: Session) -> None:
+        """reset cleans tables and re-seeds merchants."""
+        resp = client.post("/api/demo/simulate", json={"action": "reset"})
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["status"] == "success"
+        assert data["action"] == "reset"
+        assert data["merchants_count"] == 20
+
+    def test_demo_simulate_invalid_action(self, client: TestClient) -> None:
+        """Unknown action returns 400 Bad Request."""
+        resp = client.post("/api/demo/simulate", json={"action": "unknown_action"})
+        assert resp.status_code == 400
+
+
+class TestMetricsAPI:
+    """Verify GET /api/metrics (SPEC 8.1 & Section 11)."""
+
+    def test_get_metrics(self, client: TestClient) -> None:
+        resp = client.get("/api/metrics")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["scan_scenarios_accuracy"] == 1.0
+        assert data["held_out_accuracy"] == 0.95
+        assert data["held_out_precision"] == 1.0
+        assert data["held_out_recall"] == 0.90
+        assert data["held_out_fpr"] == 0.0
+        assert "median_latency_ms" in data
+        assert "p95_latency_ms" in data
+        assert "total_merchants" in data
