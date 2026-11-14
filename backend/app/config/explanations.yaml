@@ -1,0 +1,55 @@
+# Centralized safety explanations and next steps (SPEC Section 5 and Rule 8)
+# All user-facing explanations, warnings, and recommendations MUST come from this file.
+# The LLM never writes or modifies safety advice shown to users.
+
+payee_not_registered_here:
+  title: "Payee Not Registered Here"
+  en: "The payee in this QR code differs from the verified merchant registered at this shop."
+  te: "ఈ క్యూఆర్ కోడ్ లోని చెల్లింపుదారు ఈ దుకాణంలో నమోదు చేసుకున్న వ్యాపారితో సరిపోలడం లేదు."
+  hi: "इस क्यूआर कोड का भुगतानकर्ता इस दुकान पर पंजीकृत व्यापारी से मेल नहीं खाता है।"
+  next_steps:
+    - "Do not pay"
+    - "Ask the shop to confirm its UPI ID"
+    - "If money was lost, call 1930"
+
+matches_registry:
+  title: "Verified Merchant"
+  en: "QR code matches the verified merchant registered at this location."
+  te: "క్యూఆర్ కోడ్ ఈ ప్రదేశంలో నమోదైన ధృవీకరించబడిన వ్యాపారితో సరిపోలుతుంది."
+  hi: "क्यूआर कोड इस स्थान पर पंजीकृत सत्यापित व्यापारी से मेल खाता है।"
+  next_steps:
+    - "Confirm payee name matches the shop before entering your PIN"
+
+no_registry_data:
+  title: "Unverified Location"
+  en: "No registered merchant data available for this location or shop code."
+  te: "ఈ స్థానం లేదా దుకాణం కోడ్ కోసం నమోదు చేయబడిన వ్యాపారి డేటా అందుబాటులో లేదు."
+  hi: "इस स्थान या दुकान कोड के लिए कोई पंजीकृत व्यापारी डेटा उपलब्ध नहीं है।"
+  next_steps:
+    - "Verify the recipient name on your payment screen"
+    - "Ask the shopkeeper to confirm their UPI ID"
+
+payee_changed_recently:
+  title: "Payee Changed Recently"
+  en: "Payment scans at this location recently showed a different payee account."
+  te: "ఈ ప్రదేశంలో ఇటీవలి చెల్లింపు స్కాన్‌లు వేరే ఖాతాను చూపించాయి."
+  hi: "इस स्थान पर हाल के भुगतान स्कैन ने एक अलग प्राप्तकर्ता खाता दिखाया।"
+  next_steps:
+    - "Ask the merchant if they changed their UPI QR recently"
+    - "Confirm shop name before approving payment"
+
+crowd_baseline_ok:
+  title: "Consistent with History"
+  en: "Payee is consistent with normal crowd scan baseline at this location."
+  te: "చెల్లింపుదారు ఈ ప్రదేశంలో సాధారణ స్కాన్ చరిత్రతో సరిపోలుతుంది."
+  hi: "भुगतानकर्ता इस स्थान पर सामान्य स्कैन इतिहास के अनुरूप है।"
+  next_steps:
+    - "Proceed with normal caution"
+
+insufficient_baseline_data:
+  title: "Insufficient History"
+  en: "Not enough scan history at this location to verify payee pattern."
+  te: "చెల్లింపు విధానాన్ని ధృవీకరించడానికి ఈ ప్రదేశంలో తగినంత స్కాన్ చరిత్ర లేదు."
+  hi: "भुगतान पैटर्न को सत्यापित करने के लिए इस स्थान पर पर्याप्त स्कैन इतिहास नहीं है।"
+  next_steps:
+    - "Verify payee identity directly with the merchant"

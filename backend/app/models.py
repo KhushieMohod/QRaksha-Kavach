@@ -58,8 +58,20 @@ class Scan(SQLModel, table=True):
     __tablename__ = "scans"
 
     id: Optional[int] = Field(default=None, primary_key=True)
+    merchant_id: Optional[int] = Field(
+        default=None, index=True,
+        description="Associated merchant ID if identified",
+    )
     upi_id: str = Field(max_length=80, index=True,
                         description="Extracted UPI VPA from the scan")
+    pn: Optional[str] = Field(
+        default=None, max_length=120,
+        description="Payee name from QR parameters",
+    )
+    mc: Optional[str] = Field(
+        default=None, max_length=20,
+        description="Merchant category code from QR",
+    )
     coarse_lat: Optional[float] = Field(
         default=None,
         description="User lat truncated to 3 decimals (~111 m)")
@@ -80,14 +92,39 @@ class Scan(SQLModel, table=True):
 # ---------------------------------------------------------------------------
 
 class Alert(SQLModel, table=True):
-    """Risk verdict emitted after analysing a scan."""
+    """Risk verdict emitted after analysing a scan or a merchant alert."""
 
     __tablename__ = "alerts"
 
     id: Optional[int] = Field(default=None, primary_key=True)
-    scan_id: int = Field(index=True)
-    risk_level: str = Field(max_length=20,
-                            description="low / medium / high / critical")
+    merchant_id: Optional[int] = Field(
+        default=None, index=True,
+        description="Target merchant for merchant-facing alerts",
+    )
+    scan_id: Optional[int] = Field(
+        default=None, index=True,
+        description="Associated scan ID if triggered by user scan",
+    )
+    type: str = Field(
+        default="qr_swap", max_length=50,
+        description="Alert type e.g. qr_swap, drift",
+    )
+    risk_level: str = Field(
+        default="danger", max_length=20,
+        description="low / medium / high / danger / critical",
+    )
+    count: int = Field(
+        default=1,
+        description="Number of duplicate scans aggregated within rate limit",
+    )
+    seen: bool = Field(
+        default=False,
+        description="Whether the merchant has reviewed this alert",
+    )
+    details_json: Optional[str] = Field(
+        default=None,
+        description="Contextual JSON details e.g. observed UPI, distance",
+    )
     signals_json: str = Field(
         default="[]",
         description="JSON array of Signal dicts that contributed to verdict")

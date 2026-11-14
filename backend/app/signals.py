@@ -38,13 +38,19 @@ class Signal(BaseModel):
     )
 
     @classmethod
-    def ok(cls, detector: str, evidence: Optional[list[str]] = None) -> "Signal":
+    def ok(
+        cls,
+        detector: str,
+        evidence: Optional[list[str]] = None,
+        explanation_key: Optional[str] = None,
+    ) -> "Signal":
         """Convenience factory for an 'ok' signal with 0 score."""
         return cls(
             detector=detector,
             severity="ok",
             score=0.0,
             evidence=evidence or [],
+            explanation_key=explanation_key,
         )
 
     @classmethod

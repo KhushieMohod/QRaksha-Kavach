@@ -4,6 +4,52 @@ All notable changes to QRaksha-Kavach will be documented in this file.
 
 ## [Unreleased]
 
+### Step 3 — Registry Binding & Merchant Alerts (2026-11-14)
+
+**Plan:**
+- Implement Haversine great-circle distance directly in Python ($R = 6,371,000$ m) without external geographic libraries (SPEC 14.1, 6.3).
+- Implement `registry_binding` detector in `backend/app/detectors/registry_binding.py` (SPEC Section 6.3):
+  - If `shop_code` is given: look up merchant directly; compare registered UPI ID.
+  - If not given: find nearest merchant within `registry_radius_m` (100 m).
+  - Match -> `Signal.ok` ("matches registry").
+  - Mismatch -> `Signal.danger` ("payee_not_registered_here") and trigger merchant alert.
+  - No merchant within radius or unknown shop code -> `Signal.ok` ("no registry data").
+  - Validated all 6 cases in SPEC Section 6.3 table.
+- Implement `crowd_baseline` detector in `backend/app/detectors/crowd_baseline.py` (SPEC Section 6.4):
+  - Group scans by coarse location cell (3 decimal places, ~111 m).
+  - Evaluate scan history within `baseline_days` (30 days).
+  - Require at least `baseline_min_scans` (8 scans) with >= `baseline_share` (70%) for a dominant payee.
+  - If new scan differs from dominant payee -> `Signal.caution` ("payee here changed recently").
+  - Strictly never emits danger (shops can legitimately change accounts).
+- Implement merchant alert logic with 30-minute rate limiting and counter aggregation in `backend/app/alerts.py`.
+- Add API endpoints in `backend/app/main.py`:
+  - `POST /api/merchant/register` (status 201, unique shop code validation/auto-generation, coarse 3-decimal rounding).
+  - `GET /api/merchant/{id}/alerts` (retrieval by merchant integer ID or shop code string, 404 handling).
+- Create `backend/scripts/simulate_scans.py` for scan event simulation (swap bursts and crowd baseline drift).
+- Store centralized user-facing safety explanations in `backend/app/config/explanations.yaml` (AGENTS.md Rule 8).
+- Update SQLModel models in `backend/app/models.py` (`Alert` enhanced with `merchant_id`, `count`, `type`, `seen`, `details_json`).
+- Write comprehensive tests in `backend/tests/test_registry_binding.py`, `backend/tests/test_crowd_baseline.py`, and `backend/tests/test_api_merchant.py`.
+- Acceptance: 76 tests passing in pytest; clean DB seed idempotency verified.
+
+**Files created/modified:**
+- `backend/app/alerts.py` (created)
+- `backend/app/detectors/registry_binding.py` (created)
+- `backend/app/detectors/crowd_baseline.py` (created)
+- `backend/app/config/explanations.yaml` (created)
+- `backend/scripts/simulate_scans.py` (created)
+- `backend/tests/test_registry_binding.py` (created)
+- `backend/tests/test_crowd_baseline.py` (created)
+- `backend/tests/test_api_merchant.py` (created)
+- `backend/app/config/__init__.py` (modified)
+- `backend/app/config/loader.py` (modified)
+- `backend/app/detectors/__init__.py` (modified)
+- `backend/app/main.py` (modified)
+- `backend/app/models.py` (modified)
+- `backend/app/signals.py` (modified)
+- `docs/CHANGELOG.md` (modified)
+
+---
+
 ### Step 2 — QR Parser & Lookalike Detector (2026-11-13)
 
 **Plan:**

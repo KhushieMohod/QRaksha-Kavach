@@ -29,8 +29,15 @@ def load_rules() -> dict[str, Any]:
     return _load_yaml("rules.yaml")
 
 
+@lru_cache(maxsize=1)
+def load_explanations() -> dict[str, Any]:
+    """Load safety explanations from explanations.yaml."""
+    return _load_yaml("explanations.yaml")
+
+
 def clear_config_cache() -> None:
     """Clear cached configurations (useful in tests)."""
     load_thresholds.cache_clear()
     load_rules.cache_clear()
+    load_explanations.cache_clear()
 
