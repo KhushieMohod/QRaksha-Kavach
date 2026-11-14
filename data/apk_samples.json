@@ -1,0 +1,69 @@
+[
+  {
+    "id": "apk_001",
+    "file_name": "Calculator_v2.1.apk",
+    "permissions": [
+      "android.permission.VIBRATE"
+    ],
+    "source": "google_play",
+    "expected_verdict": "ok",
+    "description": "Standard utility app from Google Play Store with no sensitive permissions."
+  },
+  {
+    "id": "apk_002",
+    "file_name": "TeluguCalendar2026.apk",
+    "permissions": [
+      "android.permission.INTERNET",
+      "android.permission.ACCESS_NETWORK_STATE"
+    ],
+    "source": "play_store",
+    "expected_verdict": "ok",
+    "description": "Regional calendar app from official store with basic network access."
+  },
+  {
+    "id": "apk_003",
+    "file_name": "Notes_Backup.apk",
+    "permissions": [
+      "android.permission.READ_EXTERNAL_STORAGE"
+    ],
+    "source": "google_play",
+    "expected_verdict": "ok",
+    "description": "Productivity note taking tool from verified app store."
+  },
+  {
+    "id": "apk_004",
+    "file_name": "Traffic_Challan_Pay.apk",
+    "permissions": [
+      "android.permission.READ_SMS",
+      "android.permission.RECEIVE_SMS",
+      "android.permission.SEND_SMS",
+      "android.permission.REQUEST_INSTALL_PACKAGES"
+    ],
+    "source": "whatsapp_attachment",
+    "expected_verdict": "danger",
+    "description": "E-Challan lure APK delivered over WhatsApp that intercepts SMS OTPs and sideloads packages."
+  },
+  {
+    "id": "apk_005",
+    "file_name": "PM_Kisan_Yojana_Update.apk",
+    "permissions": [
+      "android.permission.BIND_ACCESSIBILITY_SERVICE",
+      "android.permission.RECEIVE_SMS",
+      "android.permission.BIND_DEVICE_ADMIN"
+    ],
+    "source": "telegram_channel",
+    "expected_verdict": "danger",
+    "description": "Government subsidy scheme lure requesting device admin and accessibility service control."
+  },
+  {
+    "id": "apk_006",
+    "file_name": "Electricity_Bill_Receipt.apk",
+    "permissions": [
+      "android.permission.READ_SMS",
+      "android.permission.RECEIVE_SMS"
+    ],
+    "source": "sms_link",
+    "expected_verdict": "danger",
+    "description": "Utility power bill lure sent via SMS link requesting full SMS read permissions."
+  }
+]

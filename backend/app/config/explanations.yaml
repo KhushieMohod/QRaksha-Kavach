@@ -244,3 +244,46 @@ ocr_low_confidence:
   hi: "अपलोड की गई छवि को स्पष्ट रूप से नहीं पढ़ा जा सका। कृपया टेक्स्ट को सीधे पेस्ट करें।"
   next_steps:
     - "Copy the message text and paste it into the check box"
+
+# ---------------------------------------------------------------------------
+# APK Static Triage Explanations (SPEC Section 6.8)
+# ---------------------------------------------------------------------------
+
+apk_malicious_danger:
+  title: "Malicious App Package Detected"
+  en: "This APK file requests dangerous surveillance permissions and comes from an untrusted source. Do not install."
+  te: "[Needs Human Check] ఈ యాప్ ఫైల్ ప్రమాదకరమైన అనుమతులను అడుగుతుంది మరియు అధికారిక స్టోర్ నుండి రాలేదు. ఇన్‌స్టాల్ చేయవద్దు."
+  hi: "[Needs Human Check] यह ऐप फ़ाइल खतरनाक अनुमतियों का अनुरोध करती है और किसी अविश्वसनीय स्रोत से है। इसे इंस्टॉल न करें।"
+  next_steps:
+    - "Do not install or open this APK file"
+    - "Delete the downloaded file from your device immediately"
+    - "Only install applications from the official Google Play Store"
+
+apk_suspicious_caution:
+  title: "Suspicious App Package"
+  en: "This APK file is distributed outside official app stores and requests elevated permissions."
+  te: "[Needs Human Check] ఈ యాప్ ఫైల్ అధికారిక యాప్ స్టోర్‌ల వెలుపల పంపిణీ చేయబడింది."
+  hi: "[Needs Human Check] यह ऐप फ़ाइल आधिकारिक ऐप स्टोर के बाहर वितरित की गई है।"
+  next_steps:
+    - "Do not grant SMS or Accessibility permissions"
+    - "Verify the app publisher before continuing"
+
+apk_safe_ok:
+  title: "Standard App Package"
+  en: "No suspicious lure keywords or abnormal surveillance permissions detected in this app metadata."
+  te: "[Needs Human Check] ఈ యాప్ మెటాడేటాలో అనుమానాస్పద సంకేతాలు కనుగొనబడలేదు."
+  hi: "[Needs Human Check] इस ऐप मेटाडेटा में कोई संदिग्ध संकेत नहीं मिला।"
+  next_steps:
+    - "Always review permissions before installing third-party apps"
+
+# ---------------------------------------------------------------------------
+# Voice Transcription Explanations (SPEC Section 6.9)
+# ---------------------------------------------------------------------------
+
+voice_transcribed_ok:
+  title: "Voice Note Processed"
+  en: "Spoken voice note transcribed and verified through scam detection."
+  te: "[Needs Human Check] వాయిస్ నోట్ టెక్స్ట్‌గా మార్చబడింది మరియు తనిఖీ చేయబడింది."
+  hi: "[Needs Human Check] वॉयस नोट को ट्रांसक्राइब किया गया और जांचा गया।"
+  next_steps:
+    - "Review the safety analysis of the spoken text"

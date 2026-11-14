@@ -250,3 +250,50 @@ negation_phrases:
   - "will never call"
   - "kabhi mat do"              # Hindi: never give
   - "evvariki ivvakandi"        # Telugu: don't give to anyone
+
+# ---------------------------------------------------------------------------
+# APK static metadata triage rules (SPEC Section 6.8)
+# Evaluates file_name lure words, dangerous permissions, and non-store sources.
+# ---------------------------------------------------------------------------
+apk_triage:
+  lure_filename_keywords:
+    - "challan"
+    - "kisan"
+    - "kyc"
+    - "invitation"
+    - "update"
+    - "bill"
+    - "refund"
+    - "police"
+    - "cbi"
+    - "marriage"
+  dangerous_permissions:
+    - "android.permission.READ_SMS"
+    - "android.permission.RECEIVE_SMS"
+    - "android.permission.SEND_SMS"
+    - "android.permission.BIND_ACCESSIBILITY_SERVICE"
+    - "android.permission.BIND_DEVICE_ADMIN"
+    - "android.permission.REQUEST_INSTALL_PACKAGES"
+    - "READ_SMS"
+    - "RECEIVE_SMS"
+    - "SEND_SMS"
+    - "BIND_ACCESSIBILITY_SERVICE"
+    - "BIND_DEVICE_ADMIN"
+    - "REQUEST_INSTALL_PACKAGES"
+  critical_permissions:
+    - "android.permission.BIND_ACCESSIBILITY_SERVICE"
+    - "android.permission.BIND_DEVICE_ADMIN"
+    - "BIND_ACCESSIBILITY_SERVICE"
+    - "BIND_DEVICE_ADMIN"
+  trusted_sources:
+    - "google_play"
+    - "play_store"
+    - "com.android.vending"
+    - "app_store"
+    - "samsung_galaxy_store"
+    - "official_store"
+  weights:
+    lure_filename: 0.35
+    dangerous_permission: 0.25
+    critical_permission: 0.50
+    non_store_source: 0.30

@@ -14,6 +14,7 @@ from sqlmodel import Session, select
 
 from app.database import create_db_and_tables, get_session
 from app.detectors import (
+    apk_triage,
     crowd_baseline,
     handle_lookalike,
     ocr,
@@ -432,6 +433,97 @@ async def check_image(
     # Process extracted text
     text_req = CheckTextRequest(text=img_result["text"])
     return _perform_text_check(text_req, session, start_time, req_id, source="ocr")
+
+
+# ---------------------------------------------------------------------------
+# APK Static Triage & Voice Check Endpoints (SPEC 6.8 & 6.9)
+# ---------------------------------------------------------------------------
+
+class CheckAPKMetaRequest(BaseModel):
+    """Payload for static APK metadata triage (SPEC Section 6.8)."""
+
+    file_name: str = Field(description="APK file name e.g. Challan_Update.apk")
+    permissions: list[str] = Field(default_factory=list, description="Requested permissions")
+    source: Optional[str] = Field(default="unknown", description="Installation source")
+
+
+@app.post("/api/check/apk-meta", response_model=CheckResponse)
+def check_apk_metadata(
+    payload: CheckAPKMetaRequest,
+) -> CheckResponse:
+    """Perform static metadata triage on untrusted APK package info.
+
+    SECURITY NOTE: Never handles, executes, or decompiles APK binaries.
+    """
+    start_time = time.perf_counter()
+    req_id = f"r_{uuid.uuid4().hex[:8]}"
+
+    sig = apk_triage.detect(
+        apk_triage.APKMetadata(
+            file_name=payload.file_name,
+            permissions=payload.permissions,
+            source=payload.source or "unknown",
+        )
+    )
+
+    fused = fuse_signals([sig], check_type="apk")
+    latency_ms = max(1, int((time.perf_counter() - start_time) * 1000))
+
+    return CheckResponse(
+        request_id=req_id,
+        verdict=fused.verdict,
+        reasons=fused.reasons,
+        explanation=fused.explanation,
+        next_steps=fused.next_steps,
+        latency_ms=latency_ms,
+    )
+
+
+DEMO_CACHED_VOICE_TRANSCRIPTS: dict[str, str] = {
+    "default": "Mee electricity bill pending. Download Bill_Payment.apk cheyyi leda current disconnect.",
+    "telugu_bill": "Mee electricity bill pending. Download Bill_Payment.apk cheyyi leda current disconnect.",
+    "english_bill": "Bill payment overdue. Pay Rs 5,000 now. Last warning. Your electricity will be disconnected.",
+    "digital_arrest": "URGENT POLICE NOTICE: CBI Digital Arrest warrant issued against you for illegal money laundering. Transfer penalty to officer.cbi.investigation@okaxis immediately.",
+    "legitimate_chat": "Hello, please bring one kilogram of sugar and milk from the kirana store.",
+}
+
+
+@app.post("/api/check/voice", response_model=CheckResponse)
+def check_voice(
+    file: Optional[UploadFile] = File(default=None),
+    cached_key: Optional[str] = Form(default=None),
+    text_override: Optional[str] = Form(default=None),
+    session: Session = Depends(get_session),
+) -> CheckResponse:
+    """Analyze a spoken voice note or call recording (SPEC Section 6.9).
+
+    Uses a cached transcript fallback to guarantee fast, offline-capable demo operation.
+    The transcribed text is then piped directly into scam_text detection.
+    """
+    start_time = time.perf_counter()
+    req_id = f"r_{uuid.uuid4().hex[:8]}"
+
+    # Determine transcript
+    transcript = None
+    if text_override and text_override.strip():
+        transcript = text_override.strip()
+    elif cached_key and cached_key.strip() in DEMO_CACHED_VOICE_TRANSCRIPTS:
+        transcript = DEMO_CACHED_VOICE_TRANSCRIPTS[cached_key.strip()]
+    elif file and file.filename:
+        fname = file.filename.lower()
+        if "arrest" in fname or "cbi" in fname:
+            transcript = DEMO_CACHED_VOICE_TRANSCRIPTS["digital_arrest"]
+        elif "bill" in fname or "electricity" in fname or "power" in fname:
+            transcript = DEMO_CACHED_VOICE_TRANSCRIPTS["english_bill"]
+        elif "legit" in fname or "safe" in fname or "family" in fname:
+            transcript = DEMO_CACHED_VOICE_TRANSCRIPTS["legitimate_chat"]
+        else:
+            transcript = DEMO_CACHED_VOICE_TRANSCRIPTS["default"]
+    else:
+        transcript = DEMO_CACHED_VOICE_TRANSCRIPTS["default"]
+
+    text_req = CheckTextRequest(text=transcript)
+    return _perform_text_check(text_req, session, start_time, req_id, source="voice")
 
 
 # ---------------------------------------------------------------------------

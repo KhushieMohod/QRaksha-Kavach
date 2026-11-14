@@ -145,6 +145,8 @@ def fuse_signals(
     # Rule 4: Else give UNVERIFIED
     if check_type == "text":
         explanation, next_steps = _get_explanation_data("text_unverified")
+    elif check_type in ("apk", "apk_meta"):
+        explanation, next_steps = _get_explanation_data("apk_safe_ok")
     else:
         # Check if there is an unverified / no registry explanation key from signals
         unverified_sig = next(

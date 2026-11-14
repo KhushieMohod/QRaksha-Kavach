@@ -4,6 +4,41 @@ All notable changes to QRaksha-Kavach will be documented in this file.
 
 ## [Unreleased]
 
+### Step 8 — Voice and APK Metadata Triage (2026-11-14)
+
+**Plan:**
+- Implement APK metadata triage detector in `backend/app/detectors/apk_triage.py` per SPEC Section 6.8:
+  - Operates strictly on static JSON metadata (`file_name`, `package_name`, `permissions`, `source`).
+  - Never executes, downloads, installs, or dynamically analyzes real APK binaries (following AGENTS.md Rule 10 and SPEC 6.8).
+  - Flags lure keywords (`challan`, `kisan`, `kyc`, `invitation`, `update`, `bill`, etc.).
+  - Flags critical permissions (`BIND_ACCESSIBILITY_SERVICE`, `BIND_DEVICE_ADMIN`) as high-risk/immediate danger.
+  - Flags dangerous permissions (`READ_SMS`, `RECEIVE_SMS`, `SEND_SMS`, `REQUEST_INSTALL_PACKAGES`) and untrusted sources (sideload, browser, chat).
+  - Uses the independence probability weight combination formula $1 - \prod(1 - w_i)$ and returns a standard `Signal` object.
+- Create synthetic APK metadata samples in `data/apk_samples.json`:
+  - 6 realistic samples: 3 harmless (Calculator from Play Store, TeluguCalendar from Play Store, Notes_Backup local utility) and 3 lure-style (Traffic_Challan with SMS/accessibility, PM_Kisan with SMS permissions, Electricity_Bill update with accessibility service).
+- Add configuration and explanations:
+  - In `backend/app/config/rules.yaml`: Add lure keywords, dangerous permissions, critical permissions, trusted sources, and configurable weights.
+  - In `backend/app/config/explanations.yaml`: Predefined multilingual (en, te, hi) explanations for `apk_malicious_danger`, `apk_suspicious_caution`, `apk_safe_ok`, and `voice_transcribed_ok`.
+  - In `backend/app/fusion.py`: Added check type routing for APK metadata checks.
+- Implement API endpoints in `backend/app/main.py`:
+  - `POST /api/check/apk-meta`: Validates static JSON metadata and runs APK triage, returning fused verdict, reasons, and localized explanation.
+  - `POST /api/check/voice`: Accepts audio or form input, utilizes pre-cached transcripts for offline/demo reliability, and feeds transcribed text into the `scam_text` detector.
+- Acceptance & Verification:
+  - Full pytest test suite passes: 151 passed in `backend/tests/`.
+  - Clean database seed idempotency confirmed: Seed 1: 20, Seed 2: 0.
+
+**Files created/modified:**
+- `backend/app/detectors/apk_triage.py` (created)
+- `backend/app/detectors/__init__.py` (modified)
+- `data/apk_samples.json` (created)
+- `backend/app/config/rules.yaml` (modified)
+- `backend/app/config/explanations.yaml` (modified)
+- `backend/app/fusion.py` (modified)
+- `backend/app/main.py` (modified)
+- `backend/tests/test_apk_triage.py` (created)
+- `backend/tests/test_voice.py` (created)
+- `docs/CHANGELOG.md` (modified)
+
 ### Step 7 — Payer, Merchant and Demo Screens (2026-11-14)
 
 **Plan:**

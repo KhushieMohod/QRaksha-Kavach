@@ -1,6 +1,7 @@
 """Detectors package for scam and anomaly detection."""
 
 from app.detectors import (
+    apk_triage,
     crowd_baseline,
     handle_lookalike,
     ocr,
@@ -18,4 +19,5 @@ __all__ = [
     "scam_text",
     "story_link",
     "ocr",
+    "apk_triage",
 ]
