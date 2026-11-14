@@ -1,6 +1,11 @@
 # Centralized safety explanations and next steps (SPEC Section 5 and Rule 8)
 # All user-facing explanations, warnings, and recommendations MUST come from this file.
 # The LLM never writes or modifies safety advice shown to users.
+# English text is drafted; Telugu (te) and Hindi (hi) placeholders are marked for human check.
+
+# ---------------------------------------------------------------------------
+# Registry Binding Explanations
+# ---------------------------------------------------------------------------
 
 payee_not_registered_here:
   title: "Payee Not Registered Here"
@@ -9,8 +14,8 @@ payee_not_registered_here:
   hi: "इस क्यूआर कोड का भुगतानकर्ता इस दुकान पर पंजीकृत व्यापारी से मेल नहीं खाता है।"
   next_steps:
     - "Do not pay"
-    - "Ask the shop to confirm its UPI ID"
-    - "If money was lost, call 1930"
+    - "Ask the shopkeeper to confirm their registered UPI ID"
+    - "If money was lost, call 1930 immediately"
 
 matches_registry:
   title: "Verified Merchant"
@@ -18,7 +23,7 @@ matches_registry:
   te: "క్యూఆర్ కోడ్ ఈ ప్రదేశంలో నమోదైన ధృవీకరించబడిన వ్యాపారితో సరిపోలుతుంది."
   hi: "क्यूआर कोड इस स्थान पर पंजीकृत सत्यापित व्यापारी से मेल खाता है।"
   next_steps:
-    - "Confirm payee name matches the shop before entering your PIN"
+    - "Confirm payee name matches the shop before entering your UPI PIN"
 
 no_registry_data:
   title: "Unverified Location"
@@ -27,7 +32,29 @@ no_registry_data:
   hi: "इस स्थान या दुकान कोड के लिए कोई पंजीकृत व्यापारी डेटा उपलब्ध नहीं है।"
   next_steps:
     - "Verify the recipient name on your payment screen"
-    - "Ask the shopkeeper to confirm their UPI ID"
+    - "Ask the shopkeeper to confirm their UPI ID before paying"
+
+unverified_generic:
+  title: "Unverified Payment"
+  en: "Not enough data available to verify this payment. Proceed with caution."
+  te: "[Needs Human Check] ఈ చెల్లింపును ధృవీకరించడానికి తగినంత సమాచారం లేదు. జాగ్రత్తగా ఉండండి."
+  hi: "[Needs Human Check] इस भुगतान को सत्यापित करने के लिए पर्याप्त डेटा उपलब्ध नहीं है। सावधानी से आगे बढ़ें।"
+  next_steps:
+    - "Confirm the payee details with the recipient"
+    - "Never enter your UPI PIN to receive money"
+
+text_unverified:
+  title: "No Scam Signs Detected"
+  en: "No scam signs found. This is not a guarantee."
+  te: "[Needs Human Check] ఎటువంటి స్కామ్ సంకేతాలు కనుగొనబడలేదు. ఇది భద్రత హామీ కాదు."
+  hi: "[Needs Human Check] कोई स्कैम संकेत नहीं मिला। यह सुरक्षा की गारंटी नहीं है।"
+  next_steps:
+    - "Stay vigilant against unknown callers and unexpected payment requests"
+    - "Never share your UPI PIN or OTP with anyone"
+
+# ---------------------------------------------------------------------------
+# Crowd Baseline Explanations
+# ---------------------------------------------------------------------------
 
 payee_changed_recently:
   title: "Payee Changed Recently"
@@ -54,6 +81,9 @@ insufficient_baseline_data:
   next_steps:
     - "Verify payee identity directly with the merchant"
 
+# ---------------------------------------------------------------------------
+# Scam Text Explanations
+# ---------------------------------------------------------------------------
 
 scam_text_danger:
   title: "Scam Message Detected"
@@ -64,7 +94,7 @@ scam_text_danger:
     - "Do not click any links or download any files"
     - "Do not share OTP, PIN, or passwords"
     - "Report to cyber crime helpline 1930"
-    - "Block the sender"
+    - "Block the sender immediately"
 
 scam_text_caution:
   title: "Suspicious Message"
@@ -84,6 +114,10 @@ scam_text_ok:
   next_steps:
     - "Stay alert for unusual requests"
 
+# ---------------------------------------------------------------------------
+# Story Link & Flagged Payee Explanations
+# ---------------------------------------------------------------------------
+
 flagged_payee_scam_link:
   title: "Flagged Scam Payee"
   en: "This payee was previously reported in a scam message. Do not send any money."
@@ -101,6 +135,91 @@ story_link_ok:
   hi: "हमारे समुदाय डेटाबेस में इस भुगतानकर्ता पर कोई स्कैम रिपोर्ट नहीं है।"
   next_steps:
     - "Continue verifying merchant identity before paying"
+
+# ---------------------------------------------------------------------------
+# Lookalike Handle Explanations
+# ---------------------------------------------------------------------------
+
+lookalike_brand_support:
+  title: "Impersonation Risk"
+  en: "This UPI address combines a recognized brand name with support keywords, a common pattern in phishing scams."
+  te: "[Needs Human Check] ఈ UPI చిరునామా బ్రాండ్ పేరు మరియు సపోర్ట్ పదాన్ని మిళితం చేస్తుంది, ఇది మోసపూరితమైనది."
+  hi: "[Needs Human Check] यह UPI पता ब्रांड नाम और सपोर्ट शब्द को जोड़ता है, जो फ़िशिंग का सामान्य तरीका है।"
+  next_steps:
+    - "Do not transfer money to this address"
+    - "Official organizations do not use generic payment handles for support"
+    - "Call official customer care directly using their verified website"
+
+lookalike_suffix_typo:
+  title: "Typo / Lookalike Suffix"
+  en: "The bank handle suffix closely mimics a legitimate bank handle, indicating a possible fake account."
+  te: "[Needs Human Check] బ్యాంక్ హ్యాండిల్ అసలు హ్యాండిల్‌ను పోలి ఉంది, ఇది నకిలీ ఖాతా కావచ్చు."
+  hi: "[Needs Human Check] बैंक हैंडल असली बैंक हैंडल जैसा दिखता है, जो फ़र्ज़ी खाता हो सकता है।"
+  next_steps:
+    - "Verify the spelling of the bank handle suffix"
+    - "Confirm with the official bank before proceeding"
+
+unknown_handle_suffix:
+  title: "Unrecognized Bank Handle"
+  en: "The handle suffix is not recognized among standard NPCI-published banking providers."
+  te: "[Needs Human Check] ఈ హ్యాండిల్ అధికారిక NPCI ప్రొవైడర్లలో గుర్తించబడలేదు."
+  hi: "[Needs Human Check] यह हैंडल मानक NPCI बैंक प्रदाताओं में पहचाना नहीं गया है।"
+  next_steps:
+    - "Double-check the payment address with the recipient"
+    - "Ensure the UPI app displays the verified recipient name"
+
+lookalike_digit_swap:
+  title: "Lookalike Character Swap"
+  en: "This handle swaps numbers for letters in a brand name (leetspeak), a technique used to evade fraud filters."
+  te: "[Needs Human Check] ఈ హ్యాండిల్‌లో అక్షరాలకు బదులుగా సంఖ్యలు ఉపయోగించబడ్డాయి."
+  hi: "[Needs Human Check] इस हैंडल में अक्षरों की जगह नंबरों का इस्तेमाल किया गया है।"
+  next_steps:
+    - "Do not pay to lookalike addresses"
+    - "Verify the recipient's authentic UPI ID"
+
+# ---------------------------------------------------------------------------
+# QR Parser Explanations
+# ---------------------------------------------------------------------------
+
+missing_payee_address:
+  title: "Invalid QR Code"
+  en: "This QR code does not contain a valid UPI payee address (pa parameter)."
+  te: "[Needs Human Check] ఈ క్యూఆర్ కోడ్‌లో చెల్లుబాటు అయ్యే UPI చిరునామా లేదు."
+  hi: "[Needs Human Check] इस क्यूआर कोड में मान्य UPI पता नहीं है।"
+  next_steps:
+    - "Do not scan or pay using this QR code"
+    - "Ask the shopkeeper for a clean, undamaged QR code"
+
+invalid_upi_scheme:
+  title: "Not a UPI Link"
+  en: "The scanned link is not a standard UPI payment URI (must begin with upi://pay)."
+  te: "[Needs Human Check] స్కాన్ చేసిన లింక్ ప్రామాణిక UPI చెల్లింపు లింక్ కాదు."
+  hi: "[Needs Human Check] स्कैन किया गया लिंक मानक UPI भुगतान लिंक नहीं है।"
+  next_steps:
+    - "Do not open non-UPI links in your browser"
+    - "Only scan official UPI payment QR codes"
+
+invalid_payment_amount:
+  title: "Suspicious Payment Amount"
+  en: "The QR code specifies an unusual, zero, or negative payment amount."
+  te: "[Needs Human Check] క్యూఆర్ కోడ్‌లో అసాధారణమైన లేదా సున్నా మొత్తం పేర్కొనబడింది."
+  hi: "[Needs Human Check] क्यूआर कोड में असामान्य या शून्य राशि निर्दिष्ट है।"
+  next_steps:
+    - "Enter the payment amount manually in your trusted UPI app"
+    - "Confirm the amount with the merchant before authorizing"
+
+whitespace_in_payee_address:
+  title: "Malformed Payee Address"
+  en: "The payee address contains invalid spaces or forbidden characters."
+  te: "[Needs Human Check] చెల్లింపుదారు చిరునామాలో ఖాళీలు లేదా తప్పు అక్షరాలు ఉన్నాయి."
+  hi: "[Needs Human Check] प्राप्तकर्ता पते में अमान्य स्पेस या वर्जित वर्ण हैं।"
+  next_steps:
+    - "Do not approve payments to malformed addresses"
+    - "Re-scan or type the clean address manually"
+
+# ---------------------------------------------------------------------------
+# OCR Explanations
+# ---------------------------------------------------------------------------
 
 ocr_qr_decoded:
   title: "QR Code Read from Image"

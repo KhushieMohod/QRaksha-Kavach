@@ -1,14 +1,33 @@
 """QRaksha-Kavach — FastAPI application entry point."""
 
+import time
+import uuid
 from contextlib import asynccontextmanager
 from typing import Optional
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile, status
 from pydantic import BaseModel, Field
 from sqlmodel import Session, select
 
 from app.database import create_db_and_tables, get_session
-from app.models import Alert, Merchant
+from app.detectors import (
+    crowd_baseline,
+    handle_lookalike,
+    ocr,
+    qr_parser,
+    registry_binding,
+    scam_text,
+    story_link,
+)
+from app.fusion import (
+    CheckResponse,
+    ExplanationDict,
+    ReasonItem,
+    _get_explanation_data,
+    fuse_signals,
+)
+from app.models import Alert, Merchant, Message, Scan
+from app.signals import Signal
 
 
 class MerchantRegisterRequest(BaseModel):
@@ -26,6 +45,21 @@ class MerchantRegisterRequest(BaseModel):
         default="general",
         description="Business category",
     )
+
+
+class CheckQRRequest(BaseModel):
+    """Payload for checking a UPI QR code (SPEC Section 4.4)."""
+
+    payload: str = Field(description="Raw UPI URI payload e.g. upi://pay?pa=...")
+    lat: Optional[float] = Field(default=None, description="Optional scan latitude")
+    lng: Optional[float] = Field(default=None, description="Optional scan longitude")
+    shop_code: Optional[str] = Field(default=None, description="Optional merchant shop code")
+
+
+class CheckTextRequest(BaseModel):
+    """Payload for checking a message text (SPEC Section 4.4)."""
+
+    text: str = Field(description="Suspicious message body to analyze")
 
 
 @asynccontextmanager
@@ -175,3 +209,206 @@ def get_merchant_alerts(
         }
         for a in alerts
     ]
+
+
+# ---------------------------------------------------------------------------
+# Check Endpoints & Internal Orchestration (SPEC Section 4.4 & Section 7)
+# ---------------------------------------------------------------------------
+
+def _perform_qr_check(
+    payload: CheckQRRequest,
+    session: Session,
+    start_time: float,
+    req_id: str,
+) -> CheckResponse:
+    """Internal workflow to analyze a QR payload across all relevant detectors."""
+    signals: list[Signal] = []
+
+    # 1. Parse QR payload
+    parsed = qr_parser.parse_qr(payload.payload)
+    signals.append(parsed.signal)
+
+    vpa = parsed.payload.pa if parsed.is_valid else None
+    pn = parsed.payload.pn if parsed.is_valid else None
+    mc = parsed.payload.mc if parsed.is_valid else None
+
+    # If VPA extracted, run payee-dependent detectors
+    if vpa:
+        # 2. Lookalike handle check
+        lookalike_sig = handle_lookalike.detect(vpa)
+        signals.append(lookalike_sig)
+
+        # 3. Story link check
+        story_sig = story_link.detect(vpa, session=session)
+        signals.append(story_sig)
+
+        # 4. Registry binding check
+        reg_sig = registry_binding.detect(
+            upi_id=vpa,
+            coarse_lat=payload.lat,
+            coarse_lng=payload.lng,
+            shop_code=payload.shop_code,
+            session=session,
+            trigger_alert=True,
+        )
+        signals.append(reg_sig)
+
+        # 5. Crowd baseline check (if no registered shop found and coordinates provided)
+        if (
+            payload.lat is not None
+            and payload.lng is not None
+            and reg_sig.explanation_key == "no_registry_data"
+        ):
+            crowd_sig = crowd_baseline.detect(
+                upi_id=vpa,
+                coarse_lat=payload.lat,
+                coarse_lng=payload.lng,
+                session=session,
+            )
+            signals.append(crowd_sig)
+
+    # 6. Fuse all signals into one verdict
+    fused = fuse_signals(signals, check_type="qr")
+
+    # 7. Record scan in database (coarse 3-decimal lat/lng)
+    coarse_lat = round(payload.lat, 3) if payload.lat is not None else None
+    coarse_lng = round(payload.lng, 3) if payload.lng is not None else None
+    scan = Scan(
+        upi_id=vpa or "invalid_qr",
+        coarse_lat=coarse_lat,
+        coarse_lng=coarse_lng,
+        raw_payload=payload.payload[:500],
+        verdict=fused.verdict.lower(),
+        pn=pn,
+        mc=mc,
+    )
+    session.add(scan)
+    session.commit()
+
+    latency_ms = max(1, int((time.perf_counter() - start_time) * 1000))
+
+    return CheckResponse(
+        request_id=req_id,
+        verdict=fused.verdict,
+        reasons=fused.reasons,
+        explanation=fused.explanation,
+        next_steps=fused.next_steps,
+        latency_ms=latency_ms,
+    )
+
+
+def _perform_text_check(
+    payload: CheckTextRequest,
+    session: Session,
+    start_time: float,
+    req_id: str,
+    source: str = "user_input",
+) -> CheckResponse:
+    """Internal workflow to analyze message text."""
+    # 1. Run scam_text detector
+    sig = scam_text.detect(payload.text, session=session)
+
+    # 2. Extract and link any payees if scam score >= scam_caution
+    story_link.link_message_payees(
+        session=session,
+        message_text=payload.text,
+        scam_score=sig.score,
+    )
+
+    # 3. Fuse signals
+    fused = fuse_signals([sig], check_type="text")
+
+    # 4. Record message in database
+    msg = Message(
+        text=payload.text[:2000],
+        score=sig.score,
+        source=source,
+    )
+    session.add(msg)
+    session.commit()
+
+    latency_ms = max(1, int((time.perf_counter() - start_time) * 1000))
+
+    return CheckResponse(
+        request_id=req_id,
+        verdict=fused.verdict,
+        reasons=fused.reasons,
+        explanation=fused.explanation,
+        next_steps=fused.next_steps,
+        latency_ms=latency_ms,
+    )
+
+
+@app.post("/api/check/qr", response_model=CheckResponse)
+def check_qr(
+    payload: CheckQRRequest,
+    session: Session = Depends(get_session),
+) -> CheckResponse:
+    """Analyze a UPI QR code payload and location against all detectors."""
+    start_time = time.perf_counter()
+    req_id = f"r_{uuid.uuid4().hex[:8]}"
+    return _perform_qr_check(payload, session, start_time, req_id)
+
+
+@app.post("/api/check/text", response_model=CheckResponse)
+def check_text(
+    payload: CheckTextRequest,
+    session: Session = Depends(get_session),
+) -> CheckResponse:
+    """Analyze a suspicious message text using deterministic rules and LLM."""
+    start_time = time.perf_counter()
+    req_id = f"r_{uuid.uuid4().hex[:8]}"
+    return _perform_text_check(payload, session, start_time, req_id, source="user_input")
+
+
+@app.post("/api/check/image", response_model=CheckResponse)
+async def check_image(
+    file: UploadFile = File(...),
+    lat: Optional[float] = Form(default=None),
+    lng: Optional[float] = Form(default=None),
+    shop_code: Optional[str] = Form(default=None),
+    session: Session = Depends(get_session),
+) -> CheckResponse:
+    """Analyze an uploaded screenshot or photo.
+
+    Decodes QR code first via OpenCV headless; otherwise runs OCR via Tesseract.
+    """
+    start_time = time.perf_counter()
+    req_id = f"r_{uuid.uuid4().hex[:8]}"
+
+    image_bytes = await file.read()
+    img_result = ocr.process_image(image_bytes)
+
+    # If QR code was decoded, process as QR check
+    if img_result["type"] == "qr" and img_result["payload"]:
+        qr_req = CheckQRRequest(
+            payload=img_result["payload"],
+            lat=lat,
+            lng=lng,
+            shop_code=shop_code,
+        )
+        return _perform_qr_check(qr_req, session, start_time, req_id)
+
+    # If OCR had low confidence or was empty, prompt user to paste text
+    if img_result["error"]:
+        explanation, next_steps = _get_explanation_data("ocr_low_confidence")
+        latency_ms = max(1, int((time.perf_counter() - start_time) * 1000))
+        return CheckResponse(
+            request_id=req_id,
+            verdict="CAUTION",
+            reasons=[
+                ReasonItem(
+                    detector="ocr",
+                    severity="caution",
+                    evidence=[img_result["error"]],
+                    explanation_key="ocr_low_confidence",
+                )
+            ],
+            explanation=explanation,
+            next_steps=next_steps,
+            latency_ms=latency_ms,
+        )
+
+    # Process extracted text
+    text_req = CheckTextRequest(text=img_result["text"])
+    return _perform_text_check(text_req, session, start_time, req_id, source="ocr")
