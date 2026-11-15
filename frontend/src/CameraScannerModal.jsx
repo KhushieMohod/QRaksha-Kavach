@@ -1,212 +1,270 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
-import { X, Camera, Keyboard, AlertCircle, Sparkles, CheckCircle2 } from 'lucide-react';
+import { X, Camera, Keyboard, AlertTriangle, ArrowRight } from 'lucide-react';
+import { translate } from './i18n';
 
-export default function CameraScannerModal({ isOpen, onClose, onScanSuccess }) {
-  const [activeTab, setActiveTab] = useState('camera'); // 'camera' | 'manual'
+const PRESETS = [
+  { label: 'Genuine Kirana (KIR-0001)',     payload: 'upi://pay?pa=lakshmi.kirana@okaxis&pn=LakshmiStore&am=50.00' },
+  { label: 'Swapped Sticker (Scammer)',      payload: 'upi://pay?pa=scammer.swap@ybl&pn=FakeSticker&mc=5411'       },
+  { label: 'Lookalike Handle (sbi-support)', payload: 'upi://pay?pa=sbi-support@oksbi&pn=SBIHelpDesk'              },
+  { label: 'CBI Extortion Payee (flagged)',  payload: 'upi://pay?pa=officer.cbi.investigation@okaxis&pn=CBIAlert'  },
+];
+
+export default function CameraScannerModal({ isOpen, onClose, onScanSuccess, lang = 'en' }) {
+  const t = (key) => translate(lang, key);
+
+  const [tab, setTab] = useState('camera');
   const [manualPayload, setManualPayload] = useState('upi://pay?pa=lakshmi.kirana@okaxis&pn=LakshmiStore&am=50.00');
   const [errorMsg, setErrorMsg] = useState('');
   const scannerRef = useRef(null);
   const isRunningRef = useRef(false);
 
-  // Quick preset payloads for fast testing
-  const presets = [
-    {
-      label: 'Genuine Kirana (KIR-0001)',
-      payload: 'upi://pay?pa=lakshmi.kirana@okaxis&pn=LakshmiStore&am=50.00',
-    },
-    {
-      label: 'Swapped Sticker (Scammer)',
-      payload: 'upi://pay?pa=scammer.swap@ybl&pn=FakeSticker&mc=5411',
-    },
-    {
-      label: 'Lookalike Handle (sbi-support)',
-      payload: 'upi://pay?pa=sbi-support@oksbi&pn=SBIHelpDesk',
-    },
-    {
-      label: 'Extortion Payee (CBI Impersonation)',
-      payload: 'upi://pay?pa=officer.cbi.investigation@okaxis&pn=CBIAlert',
-    },
-  ];
-
+  // ── Body Scroll Lock & Escape Key Listener ────────────────────────────────
   useEffect(() => {
-    if (!isOpen || activeTab !== 'camera') {
+    if (!isOpen) return;
+
+    // Lock background scrolling
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    // Close on Escape key
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
+  // ── Camera Scanner Lifecycle ──────────────────────────────────────────────
+  useEffect(() => {
+    if (!isOpen || tab !== 'camera') {
       stopScanner();
       return;
     }
-
-    const html5QrCode = new Html5Qrcode('qr-reader-container');
-    scannerRef.current = html5QrCode;
-
-    html5QrCode
-      .start(
-        { facingMode: 'environment' },
-        { fps: 10, qrbox: { width: 240, height: 240 } },
-        (decodedText) => {
-          stopScanner().then(() => {
-            onScanSuccess(decodedText);
-          });
-        },
-        () => {
-          // Ignore per-frame decode errors
-        }
-      )
+    const qr = new Html5Qrcode('qr-reader-box');
+    scannerRef.current = qr;
+    qr.start(
+      { facingMode: 'environment' },
+      { fps: 10, qrbox: { width: 220, height: 220 } },
+      (txt) => stopScanner().then(() => onScanSuccess(txt)),
+      () => {}
+    )
       .then(() => {
         isRunningRef.current = true;
         setErrorMsg('');
       })
-      .catch((err) => {
-        console.warn('Camera failed to start:', err);
-        setErrorMsg('Camera access is unavailable on this device. Use the Manual Input tab below to test any QR payload.');
-        setActiveTab('manual');
+      .catch(() => {
+        setErrorMsg(
+          lang === 'te'
+            ? 'ఈ పరికరంలో కెమెరా అందుబాటులో లేదు — దయచేసి మాన్యువల్ ట్యాబ్‌ని ఉపయోగించండి.'
+            : lang === 'hi'
+            ? 'इस डिवाइस पर कैमरा उपलब्ध नहीं है — कृपया नीचे दिए गए मैनुअल टैब का उपयोग करें।'
+            : 'Camera unavailable on this device — please use the Manual Payload tab below.'
+        );
+        setTab('manual');
       });
 
     return () => {
       stopScanner();
     };
-  }, [isOpen, activeTab]);
+  }, [isOpen, tab, lang, onScanSuccess]);
 
   const stopScanner = async () => {
     if (scannerRef.current && isRunningRef.current) {
       try {
         await scannerRef.current.stop();
         await scannerRef.current.clear();
-      } catch (err) {
-        // Ignored
-      }
+      } catch {}
       isRunningRef.current = false;
     }
-  };
-
-  const handleManualSubmit = (e) => {
-    e.preventDefault();
-    if (!manualPayload.trim()) return;
-    onScanSuccess(manualPayload.trim());
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="bg-paper border-flat shadow-flat-lg w-full max-w-md p-5 sm:p-6 relative rounded-none">
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-2 bg-paper-dark border-flat hover:bg-terracotta hover:text-white transition-colors"
-          aria-label="Close scanner"
-        >
-          <X className="w-5 h-5" />
-        </button>
+    <div
+      onClick={(e) => {
+        // Clicking backdrop closes modal
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+      className="fixed inset-0 z-50 overflow-y-auto bg-ink/50 backdrop-blur-sm p-3 sm:p-6 flex items-center justify-center animate-fade-in"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        className="bg-surface border border-hairline shadow-2xl rounded-2xl w-full max-w-lg flex flex-col max-h-[92vh] overflow-hidden my-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
 
-        <h2 className="text-xl sm:text-2xl font-bold text-ink mb-3 flex items-center gap-2">
-          <Camera className="w-6 h-6 text-terracotta" />
-          <span>Scan Store Counter QR</span>
-        </h2>
-
-        {/* Tab switcher */}
-        <div className="flex border-flat mb-4 bg-paper-dark text-sm font-bold">
+        {/* ── Fixed Header (Always visible at top) ─────────────────────────── */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-hairline bg-canvas shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-spruce-subtle flex items-center justify-center text-spruce">
+              <Camera className="w-5 h-5" />
+            </div>
+            <h2 className="text-xl font-bold text-ink">
+              {t('Scan Store Counter QR')}
+            </h2>
+          </div>
           <button
-            onClick={() => setActiveTab('camera')}
-            className={`flex-1 py-2 font-bold text-center flex items-center justify-center gap-2 transition-colors ${
-              activeTab === 'camera' ? 'bg-terracotta text-white' : 'text-ink hover:bg-paper'
-            }`}
+            onClick={onClose}
+            className="p-2 rounded-xl text-ink-secondary hover:text-ink hover:bg-white border border-hairline/60 transition-colors"
+            aria-label="Close"
+            title="Close (Esc)"
           >
-            <Camera className="w-4 h-4" />
-            <span>Camera Viewfinder</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('manual')}
-            className={`flex-1 py-2 font-bold text-center flex items-center justify-center gap-2 transition-colors ${
-              activeTab === 'manual' ? 'bg-terracotta text-white' : 'text-ink hover:bg-paper'
-            }`}
-          >
-            <Keyboard className="w-4 h-4" />
-            <span>Manual Payload</span>
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        {errorMsg && (
-          <div className="mb-4 p-3 bg-verdict-caution-bg border-flat border-ochre text-ink text-sm flex items-start gap-2">
-            <AlertCircle className="w-5 h-5 text-ochre shrink-0 mt-0.5" />
-            <span>{errorMsg}</span>
-          </div>
-        )}
+        {/* ── Fixed Tab Switcher ───────────────────────────────────────────── */}
+        <div className="flex border-b border-hairline text-base font-medium bg-canvas/40 shrink-0">
+          <button
+            onClick={() => setTab('camera')}
+            className={`flex-1 py-3 flex items-center justify-center gap-2 transition-colors border-b-2 ${
+              tab === 'camera'
+                ? 'border-spruce text-spruce font-bold bg-white'
+                : 'border-transparent text-ink-secondary hover:text-ink'
+            }`}
+          >
+            <Camera className="w-4 h-4" />
+            <span>{t('Camera Viewfinder')}</span>
+          </button>
+          <button
+            onClick={() => setTab('manual')}
+            className={`flex-1 py-3 flex items-center justify-center gap-2 transition-colors border-b-2 ${
+              tab === 'manual'
+                ? 'border-spruce text-spruce font-bold bg-white'
+                : 'border-transparent text-ink-secondary hover:text-ink'
+            }`}
+          >
+            <Keyboard className="w-4 h-4" />
+            <span>{t('Manual Payload')}</span>
+          </button>
+        </div>
 
-        {/* Tab 1: Live Camera Viewfinder */}
-        {activeTab === 'camera' && (
-          <div className="space-y-3">
-            <div className="relative border-flat bg-stone-900 rounded-none overflow-hidden aspect-square flex items-center justify-center">
-              <div id="qr-reader-container" className="w-full h-full"></div>
+        {/* ── Scrollable Body Area (Internal scroll, never background) ─────── */}
+        <div className="overflow-y-auto flex-1 p-5 sm:p-6 space-y-4 overscroll-contain">
 
-              {/* Viewfinder Target Reticle Frame Overlay */}
-              <div className="absolute inset-8 pointer-events-none border border-white/30 flex flex-col justify-between p-2">
-                {/* Laser scan animation */}
-                <div className="absolute left-2 right-2 h-0.5 bg-terracotta shadow-[0_0_8px_#C05621] animate-laser"></div>
-
-                {/* 4 Corner brackets */}
-                <div className="flex justify-between">
-                  <div className="w-6 h-6 border-t-4 border-l-4 border-terracotta"></div>
-                  <div className="w-6 h-6 border-t-4 border-r-4 border-terracotta"></div>
-                </div>
-                <div className="flex justify-between">
-                  <div className="w-6 h-6 border-b-4 border-l-4 border-terracotta"></div>
-                  <div className="w-6 h-6 border-b-4 border-r-4 border-terracotta"></div>
-                </div>
-              </div>
-            </div>
-            <p className="text-center text-xs text-stone-600 font-mono">
-              Align counter QR sticker within the viewfinder target box.
-            </p>
-          </div>
-        )}
-
-        {/* Tab 2: Manual Payload Input */}
-        {activeTab === 'manual' && (
-          <form onSubmit={handleManualSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-bold text-ink mb-1">
-                Paste UPI QR URL / String:
-              </label>
-              <textarea
-                value={manualPayload}
-                onChange={(e) => setManualPayload(e.target.value)}
-                rows={3}
-                className="w-full p-2.5 font-mono text-sm border-flat bg-white text-ink focus:outline-none"
-                placeholder="upi://pay?pa=shop@bank&pn=ShopName..."
-              />
-            </div>
-
-            {/* Quick 1-click test buttons */}
-            <div className="space-y-1.5">
-              <span className="text-xs font-bold text-stone-600 uppercase flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5 text-terracotta" />
-                <span>Quick Test Payloads:</span>
-              </span>
-              <div className="grid grid-cols-1 gap-1.5 text-xs">
-                {presets.map((p, idx) => (
+          {/* Camera Error / Notice */}
+          {errorMsg && (
+            <div className="p-3.5 bg-caution-bg border border-caution-border rounded-xl flex items-start gap-2.5 text-sm text-caution-dark">
+              <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5 text-caution" />
+              <div className="space-y-1">
+                <span className="font-medium block">{errorMsg}</span>
+                {tab === 'camera' && (
                   <button
-                    key={idx}
                     type="button"
-                    onClick={() => setManualPayload(p.payload)}
-                    className="p-2 bg-paper-dark border-flat text-left hover:bg-terracotta-light hover:border-terracotta flex items-center justify-between transition-colors"
+                    onClick={() => setTab('manual')}
+                    className="text-spruce font-bold underline text-sm"
                   >
-                    <span className="font-bold text-ink">{p.label}</span>
-                    <span className="font-mono text-stone-600 truncate max-w-[160px]">
-                      {p.payload.replace('upi://pay?', '')}
-                    </span>
+                    {lang === 'te' ? 'మాన్యువల్ ట్యాబ్‌కు మారండి' : lang === 'hi' ? 'मैनुअल टैब पर जाएँ' : 'Switch to Manual Test Tab'}
                   </button>
-                ))}
+                )}
               </div>
             </div>
+          )}
 
+          {/* Tab 1: Camera Viewfinder */}
+          {tab === 'camera' && (
+            <div className="space-y-4">
+              <div className="relative bg-ink rounded-xl overflow-hidden aspect-square border border-hairline max-w-xs mx-auto">
+                <div id="qr-reader-box" className="w-full h-full" />
+                {/* Visual reticle */}
+                <div className="absolute inset-6 pointer-events-none">
+                  <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-white rounded-tl" />
+                  <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-white rounded-tr" />
+                  <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-white rounded-bl" />
+                  <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-white rounded-br" />
+                </div>
+              </div>
+              <p className="text-center text-sm text-ink-muted">
+                {t('Align counter QR sticker within the viewfinder target box.')}
+              </p>
+            </div>
+          )}
+
+          {/* Tab 2: Manual Payload */}
+          {tab === 'manual' && (
+            <div className="space-y-4">
+              <div>
+                <label className="label text-sm font-semibold">
+                  {t('Paste UPI QR URL / String:')}
+                </label>
+                <textarea
+                  rows={3}
+                  value={manualPayload}
+                  onChange={(e) => setManualPayload(e.target.value)}
+                  className="input upi-id text-sm resize-none"
+                  placeholder="upi://pay?pa=shop@bank&pn=ShopName"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-xs uppercase font-bold text-ink-muted tracking-wider block">
+                  {t('Quick Test Payloads:')}
+                </span>
+                <div className="space-y-2">
+                  {PRESETS.map((p, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setManualPayload(p.payload)}
+                      className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${
+                        manualPayload === p.payload
+                          ? 'bg-spruce-subtle border-spruce text-spruce font-semibold shadow-sm'
+                          : 'bg-white border-hairline text-ink hover:bg-canvas'
+                      }`}
+                    >
+                      <div className="font-semibold text-ink">{p.label}</div>
+                      <div className="font-mono text-xs text-ink-muted truncate mt-0.5">{p.payload}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+        </div>
+
+        {/* ── Fixed Footer (Always visible at bottom) ───────────────────────── */}
+        <div className="px-6 py-4 border-t border-hairline bg-canvas flex items-center justify-between gap-3 shrink-0">
+          <button
+            type="button"
+            onClick={onClose}
+            className="btn-secondary py-2.5 px-5 text-base"
+          >
+            {lang === 'te' ? 'రద్దు చేయండి' : lang === 'hi' ? 'रद्द करें' : 'Cancel & Close'}
+          </button>
+
+          {tab === 'manual' ? (
             <button
-              type="submit"
-              className="w-full py-3 bg-terracotta text-white font-bold text-base border-flat shadow-flat-sm hover:bg-terracotta-hover active:translate-y-0.5"
+              type="button"
+              onClick={() => onScanSuccess(manualPayload.trim())}
+              disabled={!manualPayload.trim()}
+              className="btn-primary py-2.5 px-6 text-base"
             >
-              Verify This QR Code
+              <span>{t('Verify This QR Code')}</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
-          </form>
-        )}
+          ) : (
+            <button
+              type="button"
+              onClick={() => setTab('manual')}
+              className="btn-secondary py-2.5 px-5 text-base"
+            >
+              <span>{lang === 'te' ? 'మాన్యువల్ కోడ్' : lang === 'hi' ? 'मैनुअल कोड' : 'Manual Code'}</span>
+            </button>
+          )}
+        </div>
+
       </div>
     </div>
   );

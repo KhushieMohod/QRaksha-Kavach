@@ -4,6 +4,59 @@ All notable changes to QRaksha-Kavach will be documented in this file.
 
 ## [Unreleased]
 
+### Modern Responsive Full-Width UI/UX, Civic-Fintech Palette & Declutter (2026-11-15)
+
+**Plan:**
+- Completely redesign `frontend/` UI/UX according to user specifications and SPEC Section 8.1:
+  - Responsive Layout: Replace narrow centered phone-box (`max-w-2xl`) with responsive web app shell (`max-w-6xl` header, `max-w-5xl` main content). Render clean top navigation bar on desktop (`md:` / `lg:`) and bottom tab bar exclusively on mobile (`md:hidden`).
+  - Warm, Trustworthy Civic-Fintech Palette:
+    - Canvas: Warm Ivory (`#FAF8F4`)
+    - Cards: Pure White (`#FFFFFF`) with `1px solid #E5E0D5` hairline border, `rounded-2xl`, `shadow-sm`
+    - Typography: Deep Espresso Ink (`#1C1917`) and Warm Slate (`#57534E`)
+    - Primary Brand/Action: Deep Spruce-Teal (`#0F4C4C`, hover `#0B3B3B`) with white text
+    - Warm Accent: Burnished Gold (`#B7791F` / `#FEF7EA`)
+    - Verdict Banners: High-contrast emerald green (`#15803D`), slate grey (`#475569`), warm amber (`#B45309`), and crimson red (`#B91C1C`).
+  - Typography: Atkinson Hyperlegible (with Noto Sans Telugu/Devanagari fallbacks) for UI text, IBM Plex Mono for UPI IDs/codes. Enforce >= 18px base text.
+  - Declutter:
+    - Global: Remove header warning bar; place quiet 1-line privacy note in footer.
+    - Check Screen: Welcoming hero section, primary QR scan action, 3 secondary action cards, clean optional shop code input. Remove 1-click scenario pills, shop binding debug panel, and raw GPS numbers.
+    - Result Screen: Big high-contrast verdict banner, 1-line plain reason, prominent speech listen button, short next steps, expandable technical evidence.
+    - Merchant Screen: Shop selector, bold QR Health card (OK/Alert), plain English alerts feed, and register form. Remove raw payload dumps and GPS cells.
+    - Demo Screen: Clean 2x2 grid of 4 simulation buttons with 1 plain sentence each. Remove 4-minute script wall.
+    - Metrics Screen: Clean KPI cards and scenario breakdown table. Remove essay cards and pilot limits text.
+- Acceptance & Verification:
+  - Clean `pnpm --prefix frontend build`.
+  - Zero TypeScript/Vite errors.
+  - Full `pytest` verification (156 tests passing).
+
+### Professional Typography, Indian Spice Palette & Full i18n Localization (2026-11-15)
+
+**Plan:**
+- Complete end-to-end UI/UX modernization with warm trustworthy palette, professional typography, and full vernacular language support:
+  - Font Stack: `Plus Jakarta Sans` for body copy, `DM Serif Display` for high-impact verdict headlines, `JetBrains Mono` for UPI VPAs/metrics, with `Noto Sans Telugu` and `Noto Sans Devanagari` fallbacks.
+  - Indian Spice Palette: Warm ivory surface (`#FDF8F2`), deep warm-brown ink (`#1E160C`), saffron-terracotta (`#B85C2C`), neem green (`#2E7D52`), turmeric gold (`#C98A2B`), chilli red (`#B82A2A`), and dust (`#7C6E60`).
+  - Full Localization (`i18n.js`): Wired Telugu (`తె`) and Hindi (`हि`) translations across all screens (Check, Camera Scanner, Verdict Result, Merchant Dashboard, Demo Attack Simulator, and Telemetry Metrics).
+  - Micro-interactions: Animated audio waveforms, laser scan reticle, status pulse, and neo-brutalist tactile shadows.
+- Acceptance & Verification:
+  - `pnpm --prefix frontend build` passed with zero errors.
+  - `pytest` executed with 156/156 passed.
+  - `evaluate.py` confirmed 100% scenario accuracy (30/30) and 95% held-out text accuracy.
+  - Backend and frontend dev servers running and responsive.
+
+**Files created/modified:**
+- `frontend/index.html` (modified font imports & theme color)
+- `frontend/tailwind.config.js` (spice color scale, typography, animations, shadows)
+- `frontend/src/index.css` (reusable component classes, laser/waveform animations)
+- `frontend/src/i18n.js` (comprehensive Telugu & Hindi translation dictionary)
+- `frontend/src/App.jsx` (brand bar, language pills, responsive dual nav)
+- `frontend/src/CheckScreen.jsx` (hero QR scanner, vernacular presets, voice waveform)
+- `frontend/src/CameraScannerModal.jsx` (reticle laser sweep, test payloads)
+- `frontend/src/ResultScreen.jsx` (editorial serif headlines, color-coded verdict cards, audio play)
+- `frontend/src/MerchantScreen.jsx` (counter QR status banner, live alert stream, shop registration)
+- `frontend/src/DemoPanelScreen.jsx` (attack simulator cards, 4-beat guided demo script)
+- `frontend/src/MetricsScreen.jsx` (telemetry KPI cards, 30-scenario breakdown table, differentiator cards)
+- `docs/CHANGELOG.md` (updated)
+
 ### UI/UX Refinement & Polish — Warm & Trustworthy Experience (2026-11-14)
 
 **Plan:**
@@ -468,3 +521,8 @@ All notable changes to QRaksha-Kavach will be documented in this file.
 - `frontend/.gitkeep`
 - `data/.gitkeep`
 - `docs/CHANGELOG.md`
+### UI refresh and multilingual consistency (2026-11-14)
+
+**Plan:** Refresh the frontend palette and responsive layout, make the selected language global and persistent, translate common interface and safety actions for Telugu/Hindi, and verify with the frontend build and complete pytest suite.
+
+**Implemented:** Updated the color tokens and component styling, removed the viewport zoom restriction, and connected the shared language selection to the check, result, merchant, demo, and metrics screens.

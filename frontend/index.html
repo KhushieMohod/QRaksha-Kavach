@@ -5,20 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>QRaksha-Kavach — Check Before You Pay</title>
     <meta name="description" content="Check Before You Pay — Scam Detection & Verified Kirana QR Safety" />
-    <meta name="theme-color" content="#C05621" />
+    <meta name="theme-color" content="#0F4C4C" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" type="image/png" href="/icon-192.png" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
 
-    <!-- Typography: Atkinson Hyperlegible (copy) + Noto Sans Telugu & Devanagari (scripts) + IBM Plex Mono (UPI IDs) -->
+    <!-- Typography Stack:
+         Atkinson Hyperlegible — high-contrast accessible humanist sans for UI
+         IBM Plex Mono         — clean technical mono for UPI IDs and codes
+         Noto Sans Telugu / Devanagari — script fallbacks for regional text
+    -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>
-  <body class="bg-paper text-ink font-sans antialiased min-h-screen selection:bg-terracotta selection:text-white">
+  <body class="bg-[#FAF8F4] text-[#1C1917] font-sans antialiased min-h-screen">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     <script>

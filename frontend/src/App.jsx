@@ -1,23 +1,67 @@
 import React, { useState } from 'react';
-import {
-  ShieldCheck,
-  Store,
-  Sparkles,
-  BarChart3,
-  Search,
-  CheckCircle2,
-  Lock,
-} from 'lucide-react';
+import { ShieldCheck, Store, Sparkles, BarChart3, ScanLine, Shield } from 'lucide-react';
 import CheckScreen from './CheckScreen';
 import ResultScreen from './ResultScreen';
 import MerchantScreen from './MerchantScreen';
 import DemoPanelScreen from './DemoPanelScreen';
 import MetricsScreen from './MetricsScreen';
 
+const LANG_OPTIONS = [
+  { code: 'en', label: 'EN', title: 'English' },
+  { code: 'te', label: 'తెలుగు', title: 'Telugu' },
+  { code: 'hi', label: 'हिंदी', title: 'Hindi' },
+];
+
+const NAV_TABS = [
+  { id: 'check',    Icon: ScanLine,  labelKey: 'checkTab'   },
+  { id: 'merchant', Icon: Store,     labelKey: 'merchantTab' },
+  { id: 'demo',     Icon: Sparkles,  labelKey: 'demoTab'    },
+  { id: 'metrics',  Icon: BarChart3, labelKey: 'metricsTab' },
+];
+
+const UI_TEXT = {
+  en: {
+    brand:       'QRaksha-Kavach',
+    tagline:     'Check Before You Pay',
+    privacyNote: 'QRaksha-Kavach never collects UPI PINs, OTPs, or exact GPS coordinates · 100% offline-ready protection',
+    checkTab:    'Check',
+    merchantTab: 'Merchant',
+    demoTab:     'Demo',
+    metricsTab:  'Metrics',
+  },
+  te: {
+    brand:       'క్యూఆర్ రక్షా కవచ్',
+    tagline:     'చెల్లించే ముందు తనిఖీ చేయండి',
+    privacyNote: 'QRaksha-Kavach మీ UPI PIN, OTP లేదా ఖచ్చితమైన GPS ఎప్పుడూ సేకరించదు · 100% ఆఫ్‌లైన్ రక్షణ',
+    checkTab:    'తనిఖీ',
+    merchantTab: 'వ్యాపారి',
+    demoTab:     'డెమో',
+    metricsTab:  'గణాంకాలు',
+  },
+  hi: {
+    brand:       'क्यूआर रक्षा कवच',
+    tagline:     'भुगतान से पहले जांचें',
+    privacyNote: 'QRaksha-Kavach कभी भी UPI PIN, OTP या सटीक GPS एकत्र नहीं करता · 100% ऑफ़लाइन सुरक्षा',
+    checkTab:    'जांचें',
+    merchantTab: 'व्यापारी',
+    demoTab:     'डेमो',
+    metricsTab:  'आंकड़े',
+  },
+};
+
 export default function App() {
-  const [activeTab, setActiveTab] = useState('check'); // 'check' | 'merchant' | 'demo' | 'metrics'
+  const [activeTab, setActiveTab] = useState('check');
   const [currentResult, setCurrentResult] = useState(null);
-  const [globalLang, setGlobalLang] = useState('en'); // 'en' | 'te' | 'hi'
+  const [lang, setLang] = useState('en');
+  const [checkResetKey, setCheckResetKey] = useState(0);
+
+  const t = UI_TEXT[lang] || UI_TEXT.en;
+
+  const navigateToCheckHome = () => {
+    setCurrentResult(null);
+    setActiveTab('check');
+    setCheckResetKey((prev) => prev + 1);
+  };
 
   const handleResultReceived = (resultData) => {
     setCurrentResult(resultData);
@@ -27,213 +71,137 @@ export default function App() {
   const handleBackToCheck = () => {
     setCurrentResult(null);
     setActiveTab('check');
+    setCheckResetKey((prev) => prev + 1);
   };
 
-  // Multilingual translations
-  const titles = {
-    en: {
-      brand: 'QRaksha-Kavach',
-      tagline: 'Check Before You Pay',
-      subtitle: 'Verified Kirana & Payment Defense',
-      statusReady: 'Offline-Ready Protection',
-      checkTab: 'Check',
-      merchantTab: 'Merchant',
-      demoTab: 'Demo Panel',
-      metricsTab: 'Metrics',
-      privacyBadge: 'Zero PIN/OTP collection • Privacy-First',
-    },
-    te: {
-      brand: 'క్యూఆర్ రక్షా కవచ్',
-      tagline: 'చెల్లించే ముందు తనిఖీ చేయండి',
-      subtitle: 'కిరాణా దుకాణం & మోసాల రక్షణ',
-      statusReady: 'ఆఫ్‌లైన్ భద్రత సిద్ధం',
-      checkTab: 'తనిఖీ',
-      merchantTab: 'దుకాణం',
-      demoTab: 'డెమో ప్యానెల్',
-      metricsTab: 'గణాంకాలు',
-      privacyBadge: 'పిన్ / ఓటీపీ తీసుకోము • పూర్తి గోప్యత',
-    },
-    hi: {
-      brand: 'क्यूआर रक्षा कवच',
-      tagline: 'भुगतान से पहले जांचें',
-      subtitle: 'किराना दुकान एवं भुगतान सुरक्षा',
-      statusReady: 'सुरक्षा कवच सक्रिय',
-      checkTab: 'जांचें',
-      merchantTab: 'व्यापारी',
-      demoTab: 'डेमो पैनल',
-      metricsTab: 'आंकड़े',
-      privacyBadge: 'पिन/ओटीपी कभी न दें • पूर्ण गोपनीयता',
-    },
-  };
-
-  const t = titles[globalLang] || titles.en;
+  const isCheckActive = activeTab === 'check' || activeTab === 'result';
 
   return (
-    <div className="min-h-screen flex flex-col bg-paper text-ink pb-24 sm:pb-10 selection:bg-terracotta selection:text-white">
-      {/* Top Header */}
-      <header className="bg-paper-cream border-b-2 border-ink sticky top-0 z-40 backdrop-blur-md bg-opacity-95 shadow-sm">
-        <div className="max-w-xl mx-auto px-4 py-2.5 sm:py-3 flex items-center justify-between">
+    <div className="min-h-screen flex flex-col bg-canvas text-ink antialiased">
+
+      {/* ── Top Navigation Bar (Desktop & Mobile Header) ────────────────────── */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-hairline shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4">
+
           {/* Logo & Brand */}
-          <div
-            className="flex items-center gap-3 cursor-pointer select-none group"
-            onClick={() => {
-              setCurrentResult(null);
-              setActiveTab('check');
-            }}
+          <button
+            onClick={navigateToCheckHome}
+            className="flex items-center gap-3 text-left group shrink-0"
           >
-            <div className="w-10 h-10 sm:w-11 sm:h-11 bg-terracotta border-flat flex items-center justify-center text-white shadow-flat-sm group-hover:scale-105 transition-transform">
-              <ShieldCheck className="w-6 h-6 sm:w-7 sm:h-7" />
+            <div className="w-10 h-10 rounded-xl bg-spruce flex items-center justify-center shrink-0 shadow-sm group-hover:bg-spruce-hover transition-colors">
+              <ShieldCheck className="w-6 h-6 text-white" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-xl sm:text-2xl tracking-tight leading-tight text-ink">
-                  {t.brand}
-                </span>
-              </div>
-              <span className="text-xs font-bold text-terracotta tracking-wide uppercase flex items-center gap-1.5">
-                <span>{t.tagline}</span>
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-forest animate-pulse"></span>
+              <span className="font-bold text-xl sm:text-2xl leading-none tracking-tight text-ink block">
+                {t.brand}
+              </span>
+              <span className="text-xs sm:text-sm font-medium text-ink-secondary leading-tight block mt-0.5">
+                {t.tagline}
               </span>
             </div>
+          </button>
+
+          {/* Center Navigation Tabs (Desktop only) */}
+          <nav className="hidden md:flex items-center gap-1 bg-canvas p-1 rounded-xl border border-hairline">
+            {NAV_TABS.map(({ id, Icon, labelKey }) => {
+              const isActive = id === 'check' ? isCheckActive : activeTab === id;
+              return (
+                <button
+                  key={id}
+                  onClick={() => {
+                    if (id === 'check') {
+                      navigateToCheckHome();
+                    } else {
+                      setCurrentResult(null);
+                      setActiveTab(id);
+                    }
+                  }}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-base font-medium transition-all ${
+                    isActive
+                      ? 'bg-white text-spruce shadow-sm font-bold border border-hairline'
+                      : 'text-ink-secondary hover:text-ink hover:bg-white/60'
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-spruce' : 'text-ink-muted'}`} />
+                  <span>{t[labelKey]}</span>
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* Language Switcher */}
+          <div className="flex items-center bg-canvas p-1 rounded-xl border border-hairline shrink-0">
+            {LANG_OPTIONS.map(({ code, label, title }) => (
+              <button
+                key={code}
+                onClick={() => setLang(code)}
+                title={title}
+                className={`px-3 py-1.5 rounded-lg text-sm sm:text-base font-medium transition-all ${
+                  lang === code
+                    ? 'bg-spruce text-white shadow-sm font-bold'
+                    : 'text-ink-secondary hover:text-ink hover:bg-white/50'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
           </div>
 
-          {/* Global Language Toggle */}
-          <div className="flex border-flat bg-white text-xs sm:text-sm font-bold shadow-flat-sm overflow-hidden">
-            <button
-              onClick={() => setGlobalLang('en')}
-              className={`px-2.5 sm:px-3 py-1 transition-all ${
-                globalLang === 'en'
-                  ? 'bg-terracotta text-white font-extrabold'
-                  : 'text-ink hover:bg-paper-dark'
-              }`}
-              title="English"
-            >
-              EN
-            </button>
-            <button
-              onClick={() => setGlobalLang('te')}
-              className={`px-2.5 sm:px-3 py-1 border-l-2 border-r-2 border-ink transition-all ${
-                globalLang === 'te'
-                  ? 'bg-terracotta text-white font-extrabold'
-                  : 'text-ink hover:bg-paper-dark'
-              }`}
-              title="తెలుగు (Telugu)"
-            >
-              తెలుగు
-            </button>
-            <button
-              onClick={() => setGlobalLang('hi')}
-              className={`px-2.5 sm:px-3 py-1 transition-all ${
-                globalLang === 'hi'
-                  ? 'bg-terracotta text-white font-extrabold'
-                  : 'text-ink hover:bg-paper-dark'
-              }`}
-              title="हिंदी (Hindi)"
-            >
-              हिंदी
-            </button>
-          </div>
-        </div>
-
-        {/* Reassuring Micro-Badge Bar */}
-        <div className="bg-paper-dark border-t border-ink/15 py-1 px-4 text-xs font-mono font-medium text-ink-muted flex items-center justify-between max-w-xl mx-auto">
-          <span className="flex items-center gap-1.5">
-            <Lock className="w-3.5 h-3.5 text-forest" />
-            <span>{t.privacyBadge}</span>
-          </span>
-          <span className="flex items-center gap-1 text-forest font-bold">
-            <span className="w-2 h-2 rounded-full bg-forest"></span>
-            <span>{t.statusReady}</span>
-          </span>
         </div>
       </header>
 
-      {/* Main Content Area (Optimized for Mobile & Desktop) */}
-      <main className="flex-1 max-w-xl w-full mx-auto p-4 sm:p-5">
-        {activeTab === 'check' && (
-          <CheckScreen onResultReceived={handleResultReceived} currentLang={globalLang} />
-        )}
-
-        {activeTab === 'result' && (
-          <ResultScreen
-            result={currentResult}
-            onBack={handleBackToCheck}
-            initialLang={globalLang}
-          />
-        )}
-
-        {activeTab === 'merchant' && <MerchantScreen />}
-
-        {activeTab === 'demo' && (
+      {/* ── Main Responsive Content Area ───────────────────────────────────── */}
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-8 py-8">
+        {activeTab === 'check'    && <CheckScreen key={checkResetKey} onResultReceived={handleResultReceived} lang={lang} />}
+        {activeTab === 'result'   && <ResultScreen result={currentResult} onBack={handleBackToCheck} lang={lang} />}
+        {activeTab === 'merchant' && <MerchantScreen lang={lang} />}
+        {activeTab === 'demo'     && (
           <DemoPanelScreen
-            onNavigateToCheck={() => setActiveTab('check')}
+            onNavigateToCheck={navigateToCheckHome}
             onNavigateToMerchant={() => setActiveTab('merchant')}
-            onNavigateToMetrics={() => setActiveTab('metrics')}
+            onNavigateToMetrics={()  => setActiveTab('metrics')}
+            lang={lang}
           />
         )}
-
-        {activeTab === 'metrics' && <MetricsScreen />}
+        {activeTab === 'metrics'  && <MetricsScreen lang={lang} />}
       </main>
 
-      {/* Bottom Sticky Navigation Bar with Tactile Feedback */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-paper-cream border-t-2 border-ink shadow-flat">
-        <div className="max-w-xl mx-auto flex items-center justify-around">
-          {/* Tab 1: Check */}
-          <button
-            onClick={() => {
-              setCurrentResult(null);
-              setActiveTab('check');
-            }}
-            className={`flex-1 py-2.5 sm:py-3 flex flex-col items-center justify-center font-bold text-xs sm:text-sm transition-all ${
-              activeTab === 'check' || activeTab === 'result'
-                ? 'bg-terracotta text-white shadow-inner font-extrabold'
-                : 'text-ink-muted hover:text-ink hover:bg-paper-dark'
-            }`}
-          >
-            <Search className="w-5 h-5 mb-0.5" />
-            <span>{t.checkTab}</span>
-          </button>
+      {/* ── Quiet Privacy Footer ───────────────────────────────────────────── */}
+      <footer className="mt-auto border-t border-hairline py-4 px-4 sm:px-8 bg-white/60 text-center text-sm text-ink-muted pb-20 md:pb-4">
+        <p className="max-w-4xl mx-auto flex items-center justify-center gap-2">
+          <Shield className="w-4 h-4 text-spruce shrink-0 inline" />
+          <span>{t.privacyNote}</span>
+        </p>
+      </footer>
 
-          {/* Tab 2: Merchant */}
-          <button
-            onClick={() => setActiveTab('merchant')}
-            className={`flex-1 py-2.5 sm:py-3 flex flex-col items-center justify-center font-bold text-xs sm:text-sm transition-all border-l-2 border-r-2 border-ink ${
-              activeTab === 'merchant'
-                ? 'bg-terracotta text-white shadow-inner font-extrabold'
-                : 'text-ink-muted hover:text-ink hover:bg-paper-dark'
-            }`}
-          >
-            <Store className="w-5 h-5 mb-0.5" />
-            <span>{t.merchantTab}</span>
-          </button>
-
-          {/* Tab 3: Demo Panel */}
-          <button
-            onClick={() => setActiveTab('demo')}
-            className={`flex-1 py-2.5 sm:py-3 flex flex-col items-center justify-center font-bold text-xs sm:text-sm transition-all border-r-2 border-ink ${
-              activeTab === 'demo'
-                ? 'bg-terracotta text-white shadow-inner font-extrabold'
-                : 'text-ink-muted hover:text-ink hover:bg-paper-dark'
-            }`}
-          >
-            <Sparkles className="w-5 h-5 mb-0.5" />
-            <span>{t.demoTab}</span>
-          </button>
-
-          {/* Tab 4: Metrics */}
-          <button
-            onClick={() => setActiveTab('metrics')}
-            className={`flex-1 py-2.5 sm:py-3 flex flex-col items-center justify-center font-bold text-xs sm:text-sm transition-all ${
-              activeTab === 'metrics'
-                ? 'bg-terracotta text-white shadow-inner font-extrabold'
-                : 'text-ink-muted hover:text-ink hover:bg-paper-dark'
-            }`}
-          >
-            <BarChart3 className="w-5 h-5 mb-0.5" />
-            <span>{t.metricsTab}</span>
-          </button>
+      {/* ── Bottom Navigation — Mobile Only (`md:hidden`) ──────────────────── */}
+      <nav className="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-hairline shadow-lg md:hidden">
+        <div className="max-w-md mx-auto flex">
+          {NAV_TABS.map(({ id, Icon, labelKey }) => {
+            const isActive = id === 'check' ? isCheckActive : activeTab === id;
+            return (
+              <button
+                key={id}
+                onClick={() => {
+                  if (id === 'check') {
+                    navigateToCheckHome();
+                  } else {
+                    setCurrentResult(null);
+                    setActiveTab(id);
+                  }
+                }}
+                className={`flex-1 flex flex-col items-center justify-center py-2.5 gap-1 text-xs font-medium transition-colors ${
+                  isActive ? 'text-spruce font-bold' : 'text-ink-secondary hover:text-ink'
+                }`}
+              >
+                <Icon className={`w-5 h-5 ${isActive ? 'text-spruce' : 'text-ink-muted'}`} />
+                <span>{t[labelKey]}</span>
+              </button>
+            );
+          })}
         </div>
       </nav>
+
     </div>
   );
 }

@@ -2,114 +2,159 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Base Configuration ─────────────────────────────────────────────────── */
 :root {
-  font-size: 18px;
+  font-size: 18px; /* SPEC Section 8.1: >= 18px base text for accessible clarity */
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background-color: #FAF8F5;
+  background-color: #FAF8F4;
   color: #1C1917;
-  font-family: "Atkinson Hyperlegible", "Noto Sans Telugu", "Noto Sans Devanagari", system-ui, sans-serif;
+  font-family: "Atkinson Hyperlegible", "Noto Sans Telugu", "Noto Sans Devanagari", system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  line-height: 1.5;
-  background-image: radial-gradient(#E8E3D7 0.8px, transparent 0.8px);
-  background-size: 24px 24px;
 }
 
-/* Flat brutalist-inspired solid borders */
-.border-flat {
-  border: 2px solid #1C1917;
+/* ── Text Selection (Visible & High-Contrast) ───────────────────────────── */
+::selection {
+  background-color: #D4E8E6; /* Light, soft spruce highlight */
+  color: #0F4C4C;            /* Deep spruce-teal text, crisp and fully legible */
 }
 
-.border-flat-thick {
-  border: 2.5px solid #1C1917;
+::-moz-selection {
+  background-color: #D4E8E6;
+  color: #0F4C4C;
 }
 
-.shadow-flat {
-  box-shadow: 3px 3px 0px #1C1917;
+/* ── Civic-Fintech Component Layer ─────────────────────────────────────── */
+@layer components {
+  /* Cards */
+  .card {
+    @apply rounded-2xl p-6 sm:p-7 shadow-sm;
+    background-color: #FFFFFF;
+    border: 1px solid #E5E0D5;
+  }
+
+  .card-interactive {
+    @apply rounded-2xl p-6 sm:p-7 shadow-sm transition-all cursor-pointer;
+    background-color: #FFFFFF;
+    border: 1px solid #E5E0D5;
+  }
+
+  .card-interactive:hover {
+    border-color: rgba(28, 25, 23, 0.25);
+    box-shadow: 0 4px 6px -1px rgba(28, 25, 23, 0.07), 0 2px 4px -1px rgba(28, 25, 23, 0.04);
+  }
+
+  /* Primary Deep Spruce-Teal Button */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2.5 text-white font-medium rounded-xl px-5 py-3.5 text-base sm:text-lg transition-colors shadow-sm disabled:opacity-50 disabled:pointer-events-none;
+    background-color: #0F4C4C;
+  }
+
+  .btn-primary:hover {
+    background-color: #0B3B3B;
+  }
+
+  .btn-primary:active {
+    background-color: #072727;
+  }
+
+  /* Secondary Neutral Button */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 bg-white text-ink font-medium rounded-xl px-5 py-3 text-base sm:text-lg transition-colors shadow-sm disabled:opacity-50;
+    border: 1px solid #E5E0D5;
+  }
+
+  .btn-secondary:hover {
+    background-color: #F5F2EC;
+    border-color: rgba(28, 25, 23, 0.3);
+  }
+
+  .btn-secondary:active {
+    background-color: #ECE8E0;
+  }
+
+  /* Ghost/Text Button */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 font-medium rounded-xl px-4 py-2.5 text-base transition-colors;
+    background-color: transparent;
+    color: #57534E;
+  }
+
+  .btn-ghost:hover {
+    background-color: #EBF3F3;
+    color: #0F4C4C;
+  }
+
+  /* Form Elements */
+  .input {
+    @apply w-full px-4 py-3 text-base sm:text-lg bg-white text-ink rounded-xl transition-colors;
+    border: 1px solid #E5E0D5;
+  }
+
+  .input:focus {
+    outline: none;
+    border-color: #0F4C4C;
+    box-shadow: 0 0 0 3px rgba(15, 76, 76, 0.18);
+  }
+
+  .label {
+    @apply block text-base font-medium text-ink-secondary mb-1.5;
+  }
+
+  /* Accessible Verdict Chips */
+  .chip-verified {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold;
+    background-color: #ECFDF5;
+    color: #15803D;
+    border: 1px solid #86EFAC;
+  }
+
+  .chip-unverified {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold;
+    background-color: #F1F5F9;
+    color: #475569;
+    border: 1px solid #CBD5E1;
+  }
+
+  .chip-caution {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold;
+    background-color: #FFFBEB;
+    color: #B45309;
+    border: 1px solid #FDE68A;
+  }
+
+  .chip-danger {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold;
+    background-color: #FEF2F2;
+    color: #B91C1C;
+    border: 1px solid #FCA5A5;
+  }
+
+  /* High-Contrast UPI ID / Code Display */
+  .upi-id {
+    @apply font-mono text-ink text-sm sm:text-base font-medium tracking-tight select-all break-all;
+  }
 }
 
-.shadow-flat-sm {
-  box-shadow: 2px 2px 0px #1C1917;
+/* ── Custom Utilities ───────────────────────────────────────────────────── */
+@layer utilities {
+  .border-hairline {
+    border-color: #E5E0D5;
+  }
 }
 
-.shadow-flat-lg {
-  box-shadow: 4px 4px 0px #1C1917;
-}
-
-/* Tactile button interaction */
-.btn-tactile {
-  transition: all 0.12s ease-in-out;
-}
-
-.btn-tactile:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0px #1C1917;
-}
-
-.btn-tactile:active {
-  transform: translate(2px, 2px);
-  box-shadow: 0px 0px 0px #1C1917;
-}
-
-/* High-contrast focus state for accessibility */
-button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
-  outline: 3px solid #C05621;
+/* ── Focus States ───────────────────────────────────────────────────────── */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #0F4C4C;
   outline-offset: 2px;
-}
-
-/* Audio wave animation */
-@keyframes soundwave-1 {
-  0%, 100% { height: 6px; }
-  50% { height: 22px; }
-}
-
-@keyframes soundwave-2 {
-  0%, 100% { height: 16px; }
-  50% { height: 6px; }
-}
-
-@keyframes soundwave-3 {
-  0%, 100% { height: 10px; }
-  50% { height: 26px; }
-}
-
-.animate-wave-1 {
-  animation: soundwave-1 0.8s ease-in-out infinite;
-}
-
-.animate-wave-2 {
-  animation: soundwave-2 0.7s ease-in-out infinite 0.2s;
-}
-
-.animate-wave-3 {
-  animation: soundwave-3 0.9s ease-in-out infinite 0.4s;
-}
-
-/* QR Scanner Laser Animation */
-@keyframes laser-sweep {
-  0% { top: 8%; opacity: 0.8; }
-  50% { top: 85%; opacity: 1; }
-  100% { top: 8%; opacity: 0.8; }
-}
-
-.animate-laser {
-  animation: laser-sweep 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Custom smooth scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #FAF8F5;
-}
-::-webkit-scrollbar-thumb {
-  background: #D6CEBE;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #A89F8D;
 }
