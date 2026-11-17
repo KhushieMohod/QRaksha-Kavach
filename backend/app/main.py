@@ -5,13 +5,14 @@ import time
 import uuid
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
-from typing import Optional
+from typing import Literal, Optional
 
 from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from sqlmodel import Session, select
 
+from app.config.loader import load_explanations, load_rules
 from app.database import create_db_and_tables, get_session
 from app.detectors import (
     apk_triage,
@@ -66,6 +67,23 @@ class CheckTextRequest(BaseModel):
     text: str = Field(description="Suspicious message body to analyze")
 
 
+class ChatbotRequest(BaseModel):
+    """Payload for selecting a guided chatbot topic."""
+
+    topic: str = Field(min_length=1, max_length=50)
+    language: Literal["en", "te", "hi"]
+
+    class Config:
+        extra = "forbid"
+
+
+class ChatbotResponse(BaseModel):
+    """Localized answer for a guided chatbot topic."""
+
+    topic: str
+    answer: str
+
+
 @asynccontextmanager
 async def lifespan(application: FastAPI):
     """Create DB tables on startup."""
@@ -93,6 +111,21 @@ app.add_middleware(
 async def health() -> dict[str, str]:
     """Health-check endpoint."""
     return {"status": "ok"}
+
+
+@app.post("/api/chatbot", response_model=ChatbotResponse)
+def chatbot_answer(request: ChatbotRequest) -> ChatbotResponse:
+    """Return a configured chatbot answer without accepting free-form messages."""
+    topic_data = load_rules().get("chatbot_topics", {}).get(request.topic)
+    if not topic_data:
+        raise HTTPException(status_code=422, detail="Unsupported chatbot topic.")
+
+    explanation_key = topic_data.get("explanation")
+    answer = load_explanations().get(explanation_key, {}).get(request.language)
+    if not answer:
+        raise HTTPException(status_code=500, detail="Chatbot answer is not configured.")
+
+    return ChatbotResponse(topic=request.topic, answer=answer)
 
 
 @app.get("/api/merchants")

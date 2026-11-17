@@ -96,3 +96,16 @@ export async function getMetrics() {
   if (!res.ok) throw new Error('Failed to load metrics');
   return res.json();
 }
+
+export async function getChatbotAnswer(topic, language) {
+  const res = await fetch(`${API_BASE}/api/chatbot`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ topic, language }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error(err.detail || 'Failed to load chatbot answer');
+  }
+  return res.json();
+}

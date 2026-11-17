@@ -5,6 +5,7 @@ import ResultScreen from './ResultScreen';
 import MerchantScreen from './MerchantScreen';
 import DemoPanelScreen from './DemoPanelScreen';
 import MetricsScreen from './MetricsScreen';
+import Chatbot from './Chatbot';
 
 const LANG_OPTIONS = [
   { code: 'en', label: 'EN', title: 'English' },
@@ -173,6 +174,8 @@ export default function App() {
           <span>{t.privacyNote}</span>
         </p>
       </footer>
+
+      <Chatbot lang={lang} />
 
       {/* ── Bottom Navigation — Mobile Only (`md:hidden`) ──────────────────── */}
       <nav className="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-hairline shadow-lg md:hidden">

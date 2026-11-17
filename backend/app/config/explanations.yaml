@@ -4,6 +4,30 @@
 # English text is drafted; Telugu (te) and Hindi (hi) placeholders are marked for human check.
 
 # ---------------------------------------------------------------------------
+# Guided Chatbot Explanations
+# ---------------------------------------------------------------------------
+
+chatbot_verify_payment:
+  en: "Before paying, check the recipient name and UPI ID shown in your payment app. If they do not match the shop, stop and confirm with the shopkeeper."
+  te: "చెల్లించే ముందు మీ చెల్లింపు యాప్‌లో చూపిన స్వీకర్త పేరు మరియు UPI IDను తనిఖీ చేయండి. అవి దుకాణం వివరాలతో సరిపోలకపోతే, ఆపి దుకాణదారునితో నిర్ధారించండి."
+  hi: "भुगतान करने से पहले अपने पेमेंट ऐप में दिख रहा प्राप्तकर्ता का नाम और UPI ID जाँचें। अगर वे दुकान से मेल नहीं खाते, तो रुकें और दुकानदार से पुष्टि करें।"
+
+chatbot_otp_safety:
+  en: "Never share your UPI PIN or OTP. A UPI PIN is used to send money, not to receive it."
+  te: "మీ UPI PIN లేదా OTPను ఎప్పుడూ పంచుకోవద్దు. UPI PIN డబ్బు పంపడానికి మాత్రమే, స్వీకరించడానికి కాదు."
+  hi: "अपना UPI PIN या OTP कभी साझा न करें। UPI PIN पैसे भेजने के लिए होता है, पैसे पाने के लिए नहीं।"
+
+chatbot_suspicious_message:
+  en: "Do not open links, install apps, or follow urgent payment requests from unknown messages. Check suspicious message text with this app."
+  te: "తెలియని సందేశాల్లోని లింక్‌లను తెరవకండి, యాప్‌లను ఇన్‌స్టాల్ చేయకండి లేదా అత్యవసర చెల్లింపు అభ్యర్థనలను పాటించకండి. అనుమానాస్పద సందేశాన్ని ఈ యాప్‌లో తనిఖీ చేయండి."
+  hi: "अनजान संदेशों के लिंक न खोलें, ऐप इंस्टॉल न करें और जल्दबाज़ी में भुगतान न करें। संदिग्ध संदेश को इस ऐप में जाँचें।"
+
+chatbot_lost_money:
+  en: "If you lost money, contact your bank or payment provider and call India's cybercrime helpline at 1930 promptly. Never share your PIN or OTP."
+  te: "మీ డబ్బు పోయినట్లయితే, వెంటనే మీ బ్యాంక్ లేదా చెల్లింపు సేవా సంస్థను సంప్రదించి, భారత సైబర్ క్రైమ్ హెల్ప్‌లైన్ 1930కు కాల్ చేయండి. మీ PIN లేదా OTPను పంచుకోవద్దు."
+  hi: "अगर आपके पैसे चले गए हैं, तो तुरंत अपने बैंक या पेमेंट सेवा प्रदाता से संपर्क करें और भारत की साइबर अपराध हेल्पलाइन 1930 पर कॉल करें। अपना PIN या OTP साझा न करें।"
+
+# ---------------------------------------------------------------------------
 # Registry Binding Explanations
 # ---------------------------------------------------------------------------
 

@@ -13,6 +13,7 @@ The application combines information from QR codes, payment IDs, messages, scree
 - Detect suspicious payment handles, scam-message patterns, and links between reported scam messages and payment IDs.
 - Show merchant alerts and aggregate scan metrics.
 - Use English, Telugu, and Hindi interface text.
+- Ask the guided safety chatbot questions in English, Telugu, or Hindi.
 - Play pre-recorded Telugu verdict audio when available.
 - Run deterministic, rules-only checks without an LLM.
 
@@ -130,8 +131,13 @@ docker compose down
 - `POST /api/check/image` — check an uploaded image
 - `POST /api/check/apk-meta` — check static APK metadata
 - `POST /api/check/voice` — check an uploaded voice note
+- `POST /api/chatbot` — return a localized answer for a guided chatbot topic
 - `POST /api/demo/simulate` — run a demonstration simulation
 - `GET /api/metrics` — aggregate metrics
+
+The chatbot uses guided question buttons and predefined answers from
+`backend/app/config/explanations.yaml`. It does not accept free-form messages,
+call an LLM, or save chat history.
 
 ## Configuration and Privacy
 

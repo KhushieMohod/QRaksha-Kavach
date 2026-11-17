@@ -36,6 +36,17 @@ support_words:
   - gov
   - official
 
+# Guided chatbot topics map to localized, centrally managed explanations.
+chatbot_topics:
+  verify_payment:
+    explanation: chatbot_verify_payment
+  otp_safety:
+    explanation: chatbot_otp_safety
+  suspicious_message:
+    explanation: chatbot_suspicious_message
+  lost_money:
+    explanation: chatbot_lost_money
+
 # Common leetspeak digit-to-letter substitutions for brand words
 digit_substitutions:
   "0": "o"

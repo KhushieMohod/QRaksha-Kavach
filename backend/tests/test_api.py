@@ -372,3 +372,49 @@ class TestMetricsAPI:
         assert "median_latency_ms" in data
         assert "p95_latency_ms" in data
         assert "total_merchants" in data
+
+
+class TestChatbotAPI:
+    """Verify localized guided chatbot answers and input validation."""
+
+    @pytest.mark.parametrize(
+        ("topic", "language", "expected_text"),
+        [
+            ("verify_payment", "en", "recipient name"),
+            ("otp_safety", "te", "UPI PIN"),
+            ("suspicious_message", "hi", "संदेश"),
+            ("lost_money", "en", "1930"),
+        ],
+    )
+    def test_chatbot_returns_localized_answer(
+        self, client: TestClient, topic: str, language: str, expected_text: str
+    ) -> None:
+        response = client.post(
+            "/api/chatbot",
+            json={"topic": topic, "language": language},
+        )
+
+        assert response.status_code == 200
+        data = response.json()
+        assert data["topic"] == topic
+        assert expected_text in data["answer"]
+
+    def test_chatbot_rejects_unknown_topics(self, client: TestClient) -> None:
+        response = client.post(
+            "/api/chatbot",
+            json={"topic": "unknown", "language": "en"},
+        )
+
+        assert response.status_code == 422
+
+    def test_chatbot_rejects_free_form_message_fields(self, client: TestClient) -> None:
+        response = client.post(
+            "/api/chatbot",
+            json={
+                "topic": "otp_safety",
+                "language": "en",
+                "question": "Please review this message",
+            },
+        )
+
+        assert response.status_code == 422
